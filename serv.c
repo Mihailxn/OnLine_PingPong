@@ -105,7 +105,7 @@ int main()
 		    printf("sendto()");
 		    exit(2);
 		}
-		//Начало игры___________________________________________
+		//Начало игры__________________________________________________
 		short x_ball=X_FIELD/2;
 		short y_ball=Y_FIELD/2;
 		struct Vector vct;
