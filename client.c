@@ -18,7 +18,7 @@ int main(){
 	struct sockaddr_in serv_addr;
 	struct ServerToClient STC;
 	struct ClientToServer CTS;
-	int sockfd = 0, slen = sizeof(serv_addr), portnum = 15302;
+	int sockfd = 0, slen = sizeof(serv_addr), portnum = 15228;
 	
 	bzero((char *) &CTS, sizeof(CTS));
 	bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -30,7 +30,7 @@ int main(){
 	
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(portnum);
-	inet_aton("127.0.0.1", &serv_addr.sin_addr);
+	inet_aton("109.174.125.180", &serv_addr.sin_addr);
 	
 	printf ("Input nickname: ");
 	fgets(CTS.nick, sizeof(CTS.nick), stdin);
