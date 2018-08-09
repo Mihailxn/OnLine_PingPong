@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #define X_FIELD 60//Размер поля x координаты
 #define Y_FIELD 30//Размер поля y координаты
 #define MID_RACKET 3//Размер середины ракетки (только нечётное число)
@@ -60,7 +61,7 @@ int main()
     
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(15302);
-	inet_aton("192.168.2.111", &addr.sin_addr);
+	inet_aton("127.0.0.1", &addr.sin_addr);
 	if(bind(listener_1, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 	{
     	    perror("bind");
@@ -69,7 +70,7 @@ int main()
     while(1)
     {
 	client_address_size_1 = sizeof(client_1);
-	if(recvfrom(listener_1, &CTSC, sizeof(&CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
+	if(recvfrom(listener_1, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
 	{
     	    printf("recvfrom()");
     	    exit(4);
@@ -78,7 +79,7 @@ int main()
 	strncpy(STCA.nikname,CTSC.nikname,sizeof(STCA.nikname));
     
 	client_address_size_2 = sizeof(client_2);
-	if(recvfrom(listener_1, &CTSC, sizeof(&CTSC)+1, 0, (struct sockaddr *) &client_2,&client_address_size_2) <0)
+	if(recvfrom(listener_1, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_2,&client_address_size_2) <0)
 	{
     	    printf("recvfrom()");
     	    exit(4);
@@ -91,7 +92,7 @@ int main()
 		exit(1); /*выход из родительского процесса*/
 	    case 0:
 	    {
-		if (sendto(listener_1, &STCA, sizeof(&STCA), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
+		if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
 		{
 		    printf("sendto()");
 		    exit(2);
@@ -99,7 +100,7 @@ int main()
 		
 		STCA.number=2;
 		strncpy(STCA.nikname,CTSC.nikname,sizeof(STCA.nikname));
-		if (sendto(listener_1, &STCA, sizeof(&STCA), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
+		if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
 		{
 		    printf("sendto()");
 		    exit(2);
@@ -131,7 +132,7 @@ int main()
 			STCG.status="V";
 		    if(x_ball<=0)
 			STCG.status="L";
-		    if (sendto(listener_1, &STCG, sizeof(&STCG), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
+		    if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
 		    {
 			printf("sendto()");
 			exit(2);
@@ -141,7 +142,7 @@ int main()
 		        STCG.status="L";
 		    if(x_ball<=0)
 			STCG.status="V";
-		    if (sendto(listener_1, &STCG, sizeof(&STCG), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
+		    if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
 		    {
 			printf("sendto()");
 			exit(2);
