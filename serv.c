@@ -43,7 +43,7 @@ int main()
     struct ClientToServerConnect CTSC;
 	struct ServerToClientAccept STCA;
 	int listener_1, listener_2, client_address_size_1,client_address_size_2;
-	struct sockaddr_in addr, client_1,client_2;//endpoint сервера, первого клиента, второго клиента
+	struct sockaddr_in addr, client_1,client_2;
 	listener_1 = socket(AF_INET, SOCK_DGRAM, 0);
 	if(listener_1 < 0)
 	{
@@ -59,8 +59,6 @@ int main()
     	    perror("bind");
     	    exit(2);
 	}
-    while(1)
-    {
 	
     
 	client_address_size_1 = sizeof(client_1);
@@ -79,31 +77,25 @@ int main()
     	    exit(4);
 	}
 	pid_t pid;
-	//int rv;
 	switch(pid=fork())
 	{
 	    case -1:
-		perror("fork"); /* произошла ошибка */
-		exit(1); /*выход из родительского процесса*/
+			perror("fork");
+			exit(1);
 	    case 0:
-	    {
-		
-		if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
-		{
-		    printf("sendto()");
-		    exit(2);
-		}
-		
-		STCA.number=2;
-		strncpy(STCA.nikname,CTSC.nikname,sizeof(STCA.nikname));
-		if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
-		{
-		    printf("sendto()");
-		    exit(2);
-		}
-		                                                        
-		exit(0);
-	    }
+			if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
+			{
+				printf("sendto()");
+				exit(2);
+			}
+			
+			STCA.number=2;
+			strncpy(STCA.nikname,CTSC.nikname,sizeof(STCA.nikname));
+			if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
+			{
+				printf("sendto()");
+				exit(2);
+			}
+			exit(0);
 	}
-    }
 }
