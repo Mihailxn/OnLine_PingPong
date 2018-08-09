@@ -18,7 +18,7 @@ int main(){
 	struct sockaddr_in serv_addr;
 	struct ServerToClient STC;
 	struct ClientToServer CTS;
-	int sockfd = 0, slen = sizeof(serv_addr), portnum = 15226;
+	int sockfd = 0, slen = sizeof(serv_addr), portnum = 15302;
 	
 	bzero((char *) &CTS, sizeof(CTS));
 	bzero((char *) &serv_addr, sizeof(serv_addr));
