@@ -95,7 +95,7 @@ void *listener_fn(void *arguments)
 	}
     
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(15311);
+	addr.sin_port = htons(15314);
 	inet_aton("127.0.0.1", &addr.sin_addr);
 	if(bind(listener_1, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 	{
@@ -153,7 +153,7 @@ void *listener_fn(void *arguments)
 		bzero((char* )&STCG, sizeof(STCG));
 		//ssize_t status;
 		
-		while(vct.x=rand()%3-1==0);
+		while((vct.x=rand()%3-1)==0);
 			vct.y=rand()%3-1;
 			
 			
@@ -320,7 +320,7 @@ void *listener_fn(void *arguments)
 		    x_ball+=vct.x;
 		    y_ball+=vct.y;
 		    
-		    sleep(5);//Пока подольше для отладки
+		    //sleep(5);//Пока подольше для отладки
 		}
 		int status[2];
 		pthread_join(p_listener_1,(void **)&status[1]);
