@@ -19,7 +19,7 @@ struct ClientToServer{
 };
 
 struct gameClientToServer{
-	char move;
+	int move;
 };
 
 struct gameServerToClient{
@@ -72,20 +72,19 @@ int main(){
 		if (pid == 0){
 			char key;
 			while (!exitflag){
-				scanf("%c", &key);
-				switch(key){
-					case 'w':
-						gCTS.move = 'U';
-						puts("sending u");
+				key = getchar();
+				if (key == 'w'){
+						gCTS.move = 1;
+						puts("sending 1");
 						sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
-						break;
-					case 's':
-						gCTS.move = 'D';
-						puts("sending d");
+				} else {
+					if (key == 's'){
+						gCTS.move = 2;
+						puts("sending 2");
 						sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
-						break;
-					default:
-						break;
+					} else {
+						puts("vse ploha");
+					}
 				}
 			}
 		} else {
