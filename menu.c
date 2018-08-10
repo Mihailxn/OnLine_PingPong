@@ -8,7 +8,7 @@ short menu(short highlight){
 	curs_set(FALSE);//прячем курсор
 	
 	short enter = 0;
-	char game_name[3][32]={{"Multiplayer Offline Game"},{"Multiplayer offline Online Game"},{"Game with Bot"}};
+	char game_name[3][32]={{"Multiplayer Online Game"},{"Multiplayer Offline Game"},{"Game with Bot"}};
 	short n_list=3;
 	
 	//задаём цветовые пары
