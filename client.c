@@ -62,6 +62,7 @@ int main(){
 	sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
 	
 	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
+	printf("My nick:%s\nNumber: %d\n", STC.nick, STC.number);
 	
 	pid = fork();
 	if (pid == -1){
@@ -71,14 +72,17 @@ int main(){
 		if (pid == 0){
 			char key;
 			while (!exitflag){
-				key = getch();
+				sleep(3);
+				scanf("%c", &key);
 				switch(key){
 					case 'w':
 						gCTS.move = 'U';
+						puts("sending u");
 						sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
 						break;
 					case 's':
 						gCTS.move = 'D';
+						puts("sending d");
 						sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
 						break;
 					default:
@@ -87,7 +91,11 @@ int main(){
 			}
 		} else {
 			while (goals < 5){
-				recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr *)&serv_addr, &slen);
+				sleep(3);
+				if (recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr *)&serv_addr, &slen) > 0);
+				puts("got back struct");
+				printf ("x_ball = %d\ny_ball = %d\nxpl1 = %d\nypl1 = %d\n", gSTC.x_ball, gSTC.y_ball,
+						gSTC.y_player1,gSTC.y_player2);
 				//redraw screen();
 			}
 			exitflag = 1;
