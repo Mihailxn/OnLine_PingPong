@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ncurses.h>
+#include <unistd.h>
+#include <pthread.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 
 struct ServerToClient{
 	char nick[15];
@@ -26,13 +30,16 @@ struct gameServerToClient{
 	char res;
 };
 
+int exitflag = 0;
+
 int main(){
 	struct sockaddr_in serv_addr;
 	struct ServerToClient STC;
 	struct ClientToServer CTS;
 	struct gameClientToServer gCTS;
 	struct gameServerToClient gSTC;
-	int sockfd = 0, slen = sizeof(serv_addr), portnum = 15228;
+	int sockfd = 0, slen = sizeof(serv_addr), portnum = 15228, goals = 0;
+	pid_t pid;
 	
 	bzero((char *) &CTS, sizeof(CTS));
 	bzero((char *) &STC, sizeof(STC));
@@ -55,8 +62,40 @@ int main(){
 	sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
 	
 	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
-	printf("Got back:\n%s", STC.nick);
-	printf("Number: %d\n", STC.number);
+	
+	pid = fork();
+	if (pid == -1){
+		perror("fork");
+		exit(0);
+	} else {
+		if (pid == 0){
+			char key;
+			while (!exitflag){
+				key = getch();
+				switch(key){
+					case 'w':
+						gCTS.move = 'U';
+						sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
+						break;
+					case 's':
+						gCTS.move = 'D';
+						sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
+						break;
+					default:
+						break;
+				}
+			}
+		} else {
+			while (goals < 5){
+				recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr *)&serv_addr, &slen);
+				//redraw screen();
+			}
+			exitflag = 1;
+		}
+	}
+	
+	
+
 
 	return 0;
 }
