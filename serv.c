@@ -62,7 +62,7 @@ void *listener_fn(void *arguments)
     while(1)
     {
 	//Без мьютексов так как изменяет данные только один данный поток, а чтением можно принебречь
-	if(status = recvfrom(arg.listener, &CTSG, sizeof(CTSG)+1, 0, (struct sockaddr *) arg->client,&arg.client_address_size) <0)
+	if(status = recvfrom(arg->listener_1, &CTSG, sizeof(CTSG)+1, 0, (struct sockaddr *) arg->client,&arg->client_address_size) <0)
 	{
 		printf("recvfrom()");
 		exit(4);
@@ -157,15 +157,15 @@ void *listener_fn(void *arguments)
 			vct.y=rand()%3-1;
 			
 			
-		struct ListenerArguments LA1;//Аргумент для слушателя игрока слева
-		LA1.listener=listener_1;
-		LA1.client_address_size=client_address_size_1;
+		struct ListenerArguments *LA1;//Аргумент для слушателя игрока слева
+		LA1->listener_1=listener_1;
+		LA1->client_address_size=client_address_size_1;
 		LA1->client=&client_1;
 		LA1->y_play=&y_play_1;
 		
-		struct ListenerArguments LA2;//Аргумент для слушателя игрока справа
-		LA2.listener=listener_1;
-		LA2.client_address_size=client_address_size_2;
+		struct ListenerArguments *LA2;//Аргумент для слушателя игрока справа
+		LA2->listener_1=listener_1;
+		LA2->client_address_size=client_address_size_2;
 		LA2->client=&client_2;
 		LA2->y_play=&y_play_2;
 		
@@ -226,7 +226,7 @@ void *listener_fn(void *arguments)
 				exit(2);
 		    }
 		    
-		    //вынести в функцию но мне пока лень__________________________
+		    //вынести в функцию но мне пока лень________________
 		    //Если мяч улетел за правого игрока
 		    if(x_ball>=X_FIELD)
 		    {
@@ -320,6 +320,9 @@ void *listener_fn(void *arguments)
 		    
 		    sleep(5);//Пока подольше для отладки
 		}
+		int status[2];
+		pthread_join(p_listener_1,(void **)&status[1]);
+		pthread_join(p_listener_2,(void **)&status[2]);
 		exit(0);
 	    }
 	}
