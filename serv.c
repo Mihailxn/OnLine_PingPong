@@ -47,7 +47,7 @@
 struct ListenerArguments
 {
     short int *y_play;
-    int listener_1;
+    int *listener_1;
     int client_address_size;
     struct sockaddr_in *client;
 };
@@ -62,7 +62,7 @@ void *listener_fn(void *arguments)
     while(1)
     {
 	//Без мьютексов так как изменяет данные только один данный поток, а чтением можно принебречь
-	if(status = recvfrom(arg->listener_1, &CTSG, sizeof(CTSG)+1, 0, (struct sockaddr *) arg->client,&arg->client_address_size) <0)
+	if(status = recvfrom(*arg->listener_1, &CTSG, sizeof(CTSG)+1, 0, (struct sockaddr *) arg->client,&arg->client_address_size) <0)
 	{
 		printf("recvfrom()");
 		exit(4);
@@ -95,7 +95,7 @@ void *listener_fn(void *arguments)
 	}
     
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(15302);
+	addr.sin_port = htons(15311);
 	inet_aton("127.0.0.1", &addr.sin_addr);
 	if(bind(listener_1, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 	{
@@ -110,7 +110,7 @@ void *listener_fn(void *arguments)
     	    printf("recvfrom()");
     	    exit(4);
 	}
-	
+	strncpy(STCA.nikname,CTSC.nikname,sizeof(STCA.nikname));
     
 	client_address_size_2 = sizeof(client_2);
 	if(recvfrom(listener_1, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_2,&client_address_size_2) <0)
@@ -127,7 +127,7 @@ void *listener_fn(void *arguments)
 	    case 0:
 	    {
 			STCA.number=1;
-			strncpy(STCA.nikname,CTSC.nikname,sizeof(STCA.nikname));
+			
 		if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
 		{
 		    printf("sendto()");
@@ -157,22 +157,24 @@ void *listener_fn(void *arguments)
 			vct.y=rand()%3-1;
 			
 			
-		struct ListenerArguments *LA1;//Аргумент для слушателя игрока слева
-		LA1->listener_1=listener_1;
-		LA1->client_address_size=client_address_size_1;
-		LA1->client=&client_1;
-		LA1->y_play=&y_play_1;
+		struct ListenerArguments LA1;//Аргумент для слушателя игрока слева
+		bzero((char*)&LA1, sizeof(LA1));
+		LA1.listener_1=&listener_1;
+		LA1.client_address_size=client_address_size_1;
+		LA1.client=&client_1;
+		LA1.y_play=&y_play_1;
 		
-		struct ListenerArguments *LA2;//Аргумент для слушателя игрока справа
-		LA2->listener_1=listener_1;
-		LA2->client_address_size=client_address_size_2;
-		LA2->client=&client_2;
-		LA2->y_play=&y_play_2;
+		struct ListenerArguments LA2;//Аргумент для слушателя игрока справа
+		bzero((char*)&LA2, sizeof(LA2));
+		LA2.listener_1=&listener_1;
+		LA2.client_address_size=client_address_size_2;
+		LA2.client=&client_2;
+		LA2.y_play=&y_play_2;
 		
 		pthread_t p_listener_1;
 		pthread_t p_listener_2;
-		pthread_create(&p_listener_1,NULL,listener_fn,(void*)LA1);
-		pthread_create(&p_listener_2,NULL,listener_fn,(void*)LA2);
+		pthread_create(&p_listener_1,NULL,listener_fn,(void*)&LA1);
+		pthread_create(&p_listener_2,NULL,listener_fn,(void*)&LA2);
 		
 		while(1)
 		{
