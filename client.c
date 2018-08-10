@@ -38,7 +38,7 @@ int main(){
 	struct ClientToServer CTS;
 	struct gameClientToServer gCTS;
 	struct gameServerToClient gSTC;
-	int sockfd = 0, slen = sizeof(serv_addr), portnum = 15228, goals = 0;
+	int sockfd = 0, slen = sizeof(serv_addr), portnum = 15302, goals = 0;
 	pid_t pid;
 	
 	bzero((char *) &CTS, sizeof(CTS));
@@ -72,7 +72,6 @@ int main(){
 		if (pid == 0){
 			char key;
 			while (!exitflag){
-				sleep(3);
 				scanf("%c", &key);
 				switch(key){
 					case 'w':
