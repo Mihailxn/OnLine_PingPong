@@ -32,7 +32,7 @@ struct gameServerToClient{
 
 int exitflag = 0;
 
-int main(){
+int main2(){
 	struct sockaddr_in serv_addr;
 	struct ServerToClient STC;
 	struct ClientToServer CTS;
@@ -99,9 +99,5 @@ int main(){
 			exitflag = 1;
 		}
 	}
-	
-	
-
-
 	return 0;
 }
