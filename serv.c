@@ -77,6 +77,7 @@ void *listener_fn(void *arguments)
 		{
 			arg->y_play -= 3;
 		}
+		printf("accept");
 	}
     }
 }
@@ -95,7 +96,7 @@ void *listener_fn(void *arguments)
 	}
     
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(15314);
+	addr.sin_port = htons(15318);
 	inet_aton("127.0.0.1", &addr.sin_addr);
 	if(bind(listener_1, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 	{
