@@ -92,34 +92,34 @@ void *listener_fn(void *arguments)
 	}
     }
 }
-
+    
  int main()
-{
+{	int port=30003;
 	struct ClientToServerConnect CTSC;
 	struct ServerToClientAccept STCA;
-	int listener_1, listener_2, client_address_size_1,client_address_size_2;
-	struct sockaddr_in addr, client_1,client_2;//endpoint сервера, первого клиента, второго клиента
-	listener_1 = socket(AF_INET, SOCK_DGRAM, 0);
-	if(listener_1 < 0)
+	int listener_2, client_address_size_1,client_address_size_2;
+	struct sockaddr_in addres, client_1,client_2;//endpoint сервера, первого клиента, второго клиента
+	listener_2 = socket(AF_INET, SOCK_DGRAM, 0);
+	if(listener_2 < 0)
 	{
     	    perror("socket");
     	    exit(1);
 	}
     
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(15200);
-	inet_aton("127.0.0.1", &addr.sin_addr);
-	if(bind(listener_1, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+	addres.sin_family = AF_INET;
+	addres.sin_port = htons(port);
+	inet_aton("127.0.0.1", &addres.sin_addr);
+	if(bind(listener_2, (struct sockaddr *)&addres, sizeof(addres)) < 0)
 	{
     	    perror("bind");
     	    exit(2);
 	}
 	
 	
-    //while(1)
-    //{
-	client_address_size_1 = sizeof(client_1);
-	if(recvfrom(listener_1, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
+    while(1)
+    {
+	client_address_size_2 = sizeof(client_1);
+	if(recvfrom(listener_2, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
 	{
     	    printf("recvfrom()");
     	    exit(4);
@@ -127,11 +127,12 @@ void *listener_fn(void *arguments)
 	strncpy(STCA.nikname,CTSC.nikname,sizeof(STCA.nikname));
     
 	client_address_size_2 = sizeof(client_2);
-	if(recvfrom(listener_1, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_2,&client_address_size_2) <0)
+	if(recvfrom(listener_2, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_2,&client_address_size_2) <0)
 	{
     	    printf("recvfrom()");
     	    exit(4);
 	}
+	port++;
 	pid_t pid;
 	switch(pid=fork())
 	{
@@ -140,8 +141,26 @@ void *listener_fn(void *arguments)
 		exit(1); /*выход из родительского процесса*/
 	    case 0:
 	    {
-			STCA.number=2;
-			
+		int listener_1;
+		listener_1 = socket(AF_INET, SOCK_DGRAM, 0);
+		if(listener_1 < 0)
+		{
+    		    perror("socket");
+    		    exit(1);
+		}	
+		struct sockaddr_in addr;
+		//Биндим новый сокет, чтобы на старый ничего не шло и было возможно подключение новых клиентов.
+		addr.sin_family = AF_INET;
+		addr.sin_port = htons(port);
+		inet_aton("127.0.0.1", &addr.sin_addr);
+		if(bind(listener_1, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+		{
+    		    perror("bind");
+    		    exit(2);
+		}
+		
+		
+		STCA.number=2;
 		if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
 		{
 		    printf("sendto()");
@@ -347,5 +366,5 @@ void *listener_fn(void *arguments)
 		exit(0);
 	    }
 	}
-    //}
+    }
 }
