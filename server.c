@@ -11,6 +11,7 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <unistd.h> 
+
 #define X_FIELD 60//Размер поля x координаты
 #define Y_FIELD 30//Размер поля y координаты
 #define MID_RACKET 3//Размер середины ракетки (только нечётное число)
@@ -67,6 +68,7 @@ void *listener_fn(void *arguments)
     {
 	//Без мьютексов так как изменяет данные только один данный поток, а чтением можно принебречь
 	if(status = recv(*arg->listener_1, &CTSG, sizeof(CTSG), 0) <0)
+
 	{
 		printf("recvfrom()");
 		exit(4);
@@ -115,11 +117,18 @@ void *listener_fn(void *arguments)
     	    exit(2);
 	}
 	
+<<<<<<< HEAD
 	
     while(1)
     {
 	client_address_size_2 = sizeof(client_1);
 	if(recvfrom(listener_2, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
+=======
+    //while(1)
+    //{
+	client_address_size_1 = sizeof(client_1);
+	if(recvfrom(listener_1, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
+>>>>>>> d5c5ecb33b16441cf4b6683b631485c92f4e03f2
 	{
     	    printf("recvfrom()");
     	    exit(4);
