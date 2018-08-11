@@ -1,11 +1,11 @@
 #This is a Make_file_on-line_ping-pong
 
-Ping-Pong: main.o menu.o pong.o secondary_f.o client.c server.c testserv.c bot.с
+Ping-Pong: main.o menu.o pong.o secondary_f.o client.c server.c testserv.c bot.c
 	gcc secondary_f.o menu.o pong.o main.o -o Ping-Pong -lncurses
 	gcc server.c -o Server -pthread
 	gcc testserv.c -o Testserv
 	gcc client.c -o Client
-  gcc bot.с -o Bot
+	gcc bot.c -o Bot
 	rm -f *.o
 main.o: main.c
 	gcc main.c -c
