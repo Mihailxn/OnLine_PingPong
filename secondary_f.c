@@ -80,7 +80,16 @@ void info(short mod){
     attron(COLOR_PAIR(1) | A_BOLD);
     printw("ESC\n\n");
     attroff(COLOR_PAIR(1) | A_BOLD);
-    if (mod == 1){
+	if(mod == 1){
+		printw("\tUP: ");
+		attron(COLOR_PAIR(1) | A_BOLD);
+		printw("KEY_UP\n\n");
+		attroff(COLOR_PAIR(1) | A_BOLD);
+		printw("\tDOWN: ");
+		attron(COLOR_PAIR(1) | A_BOLD);
+		printw("KEY_DOWN\n\n");
+	}
+    if (mod == 2){
 		printw("\tPAUSE: ");
 		attron(COLOR_PAIR(1) | A_BOLD);
 		printw("P\n\n");
@@ -94,14 +103,20 @@ void info(short mod){
 		attron(COLOR_PAIR(1) | A_BOLD);
 		printw("\t  S\t\t KEY_DOWN\n");
 		attroff(COLOR_PAIR(1) | A_BOLD);
-	}else{
-		printw("\tUP: ");
+	}
+	if(mod == 3){
+		printw("\tPAUSE: ");
 		attron(COLOR_PAIR(1) | A_BOLD);
-		printw("KEY_UP\n\n");
+		printw("P\n\n");
 		attroff(COLOR_PAIR(1) | A_BOLD);
-		printw("\tDOWN: ");
+		printw("\tUP:");
 		attron(COLOR_PAIR(1) | A_BOLD);
-		printw("KEY_DOWN\n\n");
+		printw("\tKEY_UP\n");
+		attroff(COLOR_PAIR(1) | A_BOLD);
+		printw("\tDOWN:");
+		attron(COLOR_PAIR(1) | A_BOLD);
+		printw("\t KEY_DOWN\n");
+		attroff(COLOR_PAIR(1) | A_BOLD);
 	}
 	printw("\n\n\tPress any key to continium...");
 	box(stdscr, 0, 0);
