@@ -30,7 +30,8 @@ short menu(short highlight){
 	box(stdscr, 0, 0);
 	//печать списка и перемещение по нему
 	while(1){
-		for(int i = 0; i < 3; i++){
+		int i;
+		for(i = 0; i < 3; i++){
 			if(i == highlight){
 				attron(A_REVERSE | COLOR_PAIR(1) | A_BOLD);
 				mvprintw(i+13,5,"%s", game_name[i]);
