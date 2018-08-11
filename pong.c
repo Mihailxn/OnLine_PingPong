@@ -1,9 +1,11 @@
 #include <ncurses.h>
 #include <unistd.h>
+#include <string.h> 
 #include "pong.h"
 
 #define RAZMER_Y 20//высота игровогшо поля
 #define RAZMER_X 76//ширина игрового поля
+#define MAX_NAME_LEN 15
 #define LEFT 1
 #define RIGHT 2
 
@@ -155,11 +157,21 @@ void pong(short mod){
     keypad(play_wnd, true);
 	noecho();
 	
+	//если режим онлайн игры
+	if (mod == 2){
+		char nikname_1[MAX_NAME_LEN], nikname_2[MAX_NAME_LEN];
+		enter_nikname(nikname_1);
+		teke_connect(nikname_1, nikname_2);
+		mvwprintw(score_wnd, 0, 0, nikname_1);
+		mvwprintw(score_wnd, 0, xMax-strlen(nikname_2), nikname_2);
+		wrefresh(score_wnd);
+	}
+	
+	
 	for (nodelay(play_wnd,1); esc==0; usleep(2000)){
     switch(mod){
 			case 1:
 			{
-				//присвоить указателю функцию
 				if(++time%40==0){
 					offline_play(boll, v, score, y_play_1, y_play_2);
 				}
