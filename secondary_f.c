@@ -76,47 +76,55 @@ void info(short mod){
 				"\tIIIII NN   NN FF       OOOO0  \n");  
     attroff(COLOR_PAIR(2));
     move(10,1);
-    printw("\tEXIT: ");
+    printw("\tEXIT:");
     attron(COLOR_PAIR(1) | A_BOLD);
-    printw("ESC\n\n");
+    printw("\tESC\n\n");
     attroff(COLOR_PAIR(1) | A_BOLD);
-	if(mod == 1){
-		printw("\tUP: ");
-		attron(COLOR_PAIR(1) | A_BOLD);
-		printw("KEY_UP\n\n");
-		attroff(COLOR_PAIR(1) | A_BOLD);
-		printw("\tDOWN: ");
-		attron(COLOR_PAIR(1) | A_BOLD);
-		printw("KEY_DOWN\n\n");
-	}
-    if (mod == 2){
-		printw("\tPAUSE: ");
-		attron(COLOR_PAIR(1) | A_BOLD);
-		printw("P\n\n");
-		attroff(COLOR_PAIR(1) | A_BOLD);
-		printw("\t\tplayer1:\tplayer2:\n");
-		printw("\tUP:");
-		attron(COLOR_PAIR(1) | A_BOLD);
-		printw("\t  W\t\t KEY_UP\n");
-		attroff(COLOR_PAIR(1) | A_BOLD);
-		printw("\tDOWN:");
-		attron(COLOR_PAIR(1) | A_BOLD);
-		printw("\t  S\t\t KEY_DOWN\n");
-		attroff(COLOR_PAIR(1) | A_BOLD);
-	}
-	if(mod == 3){
-		printw("\tPAUSE: ");
-		attron(COLOR_PAIR(1) | A_BOLD);
-		printw("P\n\n");
-		attroff(COLOR_PAIR(1) | A_BOLD);
-		printw("\tUP:");
-		attron(COLOR_PAIR(1) | A_BOLD);
-		printw("\tKEY_UP\n");
-		attroff(COLOR_PAIR(1) | A_BOLD);
-		printw("\tDOWN:");
-		attron(COLOR_PAIR(1) | A_BOLD);
-		printw("\t KEY_DOWN\n");
-		attroff(COLOR_PAIR(1) | A_BOLD);
+	switch(mod){
+		case 1:
+			printw("\tUP:");
+			attron(COLOR_PAIR(1) | A_BOLD);
+			printw("\tKEY_UP\n\n");
+			attroff(COLOR_PAIR(1) | A_BOLD);
+			printw("\tDOWN:");
+			attron(COLOR_PAIR(1) | A_BOLD);
+			printw("\tKEY_DOWN\n\n");
+			break;
+		case 2:	
+			printw("\tPAUSE:");
+			attron(COLOR_PAIR(1) | A_BOLD);
+			printw("\tP\n\n");
+			attroff(COLOR_PAIR(1) | A_BOLD);
+			printw("\t\tplayer1:\tplayer2:\n");
+			printw("\tUP:");
+			attron(COLOR_PAIR(1) | A_BOLD);
+			printw("\t  W\t\t KEY_UP\n");
+			attroff(COLOR_PAIR(1) | A_BOLD);
+			printw("\tDOWN:");
+			attron(COLOR_PAIR(1) | A_BOLD);
+			printw("\t  S\t\t KEY_DOWN\n");
+			attroff(COLOR_PAIR(1) | A_BOLD);
+			break;
+		case 3:
+			printw("\tPAUSE:");
+			attron(COLOR_PAIR(1) | A_BOLD);
+			printw("\tP\n\n");
+			attroff(COLOR_PAIR(1) | A_BOLD);
+			printw("\tUP:");
+			attron(COLOR_PAIR(1) | A_BOLD);
+			printw("\tKEY_UP\n");
+			attroff(COLOR_PAIR(1) | A_BOLD);
+			printw("\tDOWN:");
+			attron(COLOR_PAIR(1) | A_BOLD);
+			printw("\tKEY_DOWN\n");
+			attroff(COLOR_PAIR(1) | A_BOLD);
+			break;
+		default:
+			error("This info mode not yet implemented");
+			erase();
+			refresh();
+			endwin();
+			return;
 	}
 	printw("\n\n\tPress any key to continium...");
 	box(stdscr, 0, 0);

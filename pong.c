@@ -4,6 +4,8 @@
 
 #define RAZMER_Y 20//высота игровогшо поля
 #define RAZMER_X 76//ширина игрового поля
+#define LEFT 1
+#define RIGHT 2
 
 void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, char y_play){
 		/*
@@ -36,10 +38,6 @@ void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, ch
 		refresh();//временно
 		endwin();//временно
 }
-
-
-#define LEFT 1
-#define RIGHT 2
 
 int prediction(short *boll, short *v, int player, int position){
 	int new_vector_x = v[1];
@@ -217,16 +215,6 @@ void pong(short mod){
 			}
 			case 3:
 			{
-				/*работа бота
-				*
-				* ЗДЕСЬ
-				* ДОЛЖНА
-				* БЫТЬ
-				* РЕАЛИЗОВАНА
-				* РАБОТА
-				* БОТА
-				*
-				*/
 				switch(wgetch(play_wnd)){
 					case KEY_UP:
 						y_play_1--;
@@ -245,43 +233,11 @@ void pong(short mod){
 						esc =-1;
 						break;
 					default:
-						break;			
+						break;
 				}
-				error("Mode not yet implemented");//временно
-				erase();//временно
-				refresh();//временно
-				endwin();//временно
-				return;//временно
+				y_play_2 += prediction(boll, v, y_play_2, LEFT);
+				//y_play_1 += prediction(boll, v, y_play_1, RIGHT);
 			}
-/*		
-		if(mod == 3){
-			switch(wgetch(play_wnd)){
-				case KEY_UP:
-					y_play_1--;
-					if (y_play_1 == -1)
-						y_play_1 = 0;
-					break;
-
-				case KEY_DOWN:
-					y_play_1++;
-					if (y_play_1 == yMax-3)
-						y_play_1 = yMax-4;
-					break;
-
-				case 'p':
-					getchar();
-					break;
-
-				case 0x1B: // ESC (выход)
-					esc =-1;
-					break;
-
-				default:
-					break;			
-			}	
-			y_play_2 += prediction(boll, v, y_play_2, LEFT);
-			//y_play_1 += prediction(boll, v, y_play_1, RIGHT);
-*/
 		}
 		if (esc<0) break;
 		werase(play_wnd);
