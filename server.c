@@ -114,6 +114,8 @@ void *listener_fn(void *arguments)
     	    perror("bind");
     	    exit(2);
 	}
+	
+	
     //while(1)
     //{
 	client_address_size_1 = sizeof(client_1);
