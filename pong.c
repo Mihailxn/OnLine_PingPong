@@ -5,12 +5,59 @@
 #define RAZMER_Y 20//высота игровогшо поля
 #define RAZMER_X 74//ширина игрового поля
 
+#define LEFT 1
+#define RIGHT 2
+
+int prediction(short *boll, short *v, int player, int position){
+	int new_vector_x = v[1];
+	int new_vector_y = v[0];
+	int vector_x = v[1];
+	int vector_y = v[0];
+	int new_x = boll[1];
+	int new_y = boll[0];
+	int after_x = boll[1];
+	int after_y = boll[0];
+	if(position == LEFT){
+		if((new_x < RAZMER_X/2) && (new_vector_x < 0)){
+			while(after_x > 0){
+				after_x += vector_x;
+				if((after_y == RAZMER_Y) || (after_y == 0))
+					vector_y *= -1;
+				after_y += vector_y;
+			}
+			if(player > after_y)
+				return -1;
+			if(player < after_y)
+				return +1;
+			if(player == after_y)
+				return 0;
+		}
+	}
+	if(position == RIGHT){
+		if((new_x > RAZMER_X/2) && (new_vector_x > 0)){
+			while(after_x < (RAZMER_X+2)){
+				after_x += vector_x;
+				if((after_y == RAZMER_Y) || (after_y == 0))
+					vector_y *= -1;
+				after_y += vector_y;
+			}
+			if(player > after_y)
+				return -1;
+			if(player < after_y)
+				return +1;
+			if(player == after_y)
+				return 0;
+		}
+	}
+	return 0;
+}
+
 void offline_play(short *boll, short *v, short *score, short y_play_1, short y_play_2){
 		//граница поля игры сверху или снизу
 		if (boll[0] == RAZMER_Y || boll[0] == 0)
 			v[0]*=-1;
 		//граница справа
-		if (boll[1] == RAZMER_X+1){
+		if (boll[1] == RAZMER_X+2){
 			if (y_play_1-boll[0]>1 || y_play_1-boll[0]<-1){
 				score[1]++;
 				boll[0] = RAZMER_Y/2;
@@ -38,8 +85,7 @@ void pong(short mod){
     start_color();
 	curs_set(FALSE);//прячем курсор
 	
-	if (mod!=1)
-	{
+	if (mod == 1){
 		error("Mode not yet implemented");
 		erase();
 		refresh();
@@ -87,35 +133,71 @@ void pong(short mod){
 		if(++time%40==0){
 			offline_play(boll, v, score, y_play_1, y_play_2);
 		}
-		switch(wgetch(play_wnd)){
-			case KEY_UP:
-				y_play_1--;
-				if (y_play_1 == -1)
-					y_play_1 = 0;
-				break;
-			case KEY_DOWN:
-				y_play_1++;
-				if (y_play_1 == yMax-3)
-					y_play_1 = yMax-4;
-				break;
-			case 'w':
-				y_play_2--;
-				if (y_play_2 == -1)
-					y_play_2 = 0;
-				break;
-			case 's':
-				y_play_2++;
-				if (y_play_2 == yMax-3)
-					y_play_2 = yMax-4;
-				break;
-			case 'p':
-				getchar();
-				break;
-			case 0x1B: // ESC (выход)
-				esc =-1;
-				break;
-			default:
-				break;			
+		if(mod == 2){
+			switch(wgetch(play_wnd)){
+				case KEY_UP:
+					y_play_1--;
+					if (y_play_1 == -1)
+						y_play_1 = 0;
+					break;
+
+				case KEY_DOWN:
+					y_play_1++;
+					if (y_play_1 == yMax-3)
+						y_play_1 = yMax-4;
+					break;
+
+				case 'w':
+					y_play_2--;
+					if (y_play_2 == -1)
+						y_play_2 = 0;
+					break;
+
+				case 's':
+					y_play_2++;
+					if (y_play_2 == yMax-3)
+						y_play_2 = yMax-4;
+					break;
+
+				case 'p':
+					getchar();
+					break;
+
+				case 0x1B: // ESC (выход)
+					esc =-1;
+					break;
+
+				default:
+					break;			
+			}
+		}
+		if(mod == 3){
+			switch(wgetch(play_wnd)){
+				case KEY_UP:
+					y_play_1--;
+					if (y_play_1 == -1)
+						y_play_1 = 0;
+					break;
+
+				case KEY_DOWN:
+					y_play_1++;
+					if (y_play_1 == yMax-3)
+						y_play_1 = yMax-4;
+					break;
+
+				case 'p':
+					getchar();
+					break;
+
+				case 0x1B: // ESC (выход)
+					esc =-1;
+					break;
+
+				default:
+					break;			
+			}	
+			y_play_2 += prediction(boll, v, y_play_2, LEFT);
+			//y_play_1 += prediction(boll, v, y_play_1, RIGHT);
 		}
 		if (esc<0) break;
 		werase(play_wnd);
