@@ -123,7 +123,8 @@ void pong(short mod){
 		mvwvline(play_wnd,0,RAZMER_X/2+1,ACS_VLINE,RAZMER_Y+1);
 		wattron(play_wnd,COLOR_PAIR(1) | A_BOLD);
 		mvwprintw(play_wnd,boll[0],boll[1],"o");
-		for(int i=-1;i<2;i++){
+		int i;
+		for(i=-1;i<2;i++){
 			mvwprintw(play_wnd,y_play_2+i,0,"|");
 			mvwprintw(play_wnd,y_play_1+i,xMax-3,"|");
 		}

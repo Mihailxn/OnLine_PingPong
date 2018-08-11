@@ -10,6 +10,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <unistd.h> 
+
 #define X_FIELD 60//Размер поля x координаты
 #define Y_FIELD 30//Размер поля y координаты
 #define MID_RACKET 3//Размер середины ракетки (только нечётное число)
@@ -33,6 +35,7 @@
  struct ClientToServerGame
 {
     char act;
+    short number;
 }/*CTSG*/;
  struct ServerToClientGame
 {
@@ -47,7 +50,8 @@
 struct ListenerArguments
 {
     //short int *y_play;
-	int move;
+    int move_1;
+    int move_2;
     int *listener_1;
     int client_address_size;
     struct sockaddr_in *client;
@@ -63,21 +67,28 @@ void *listener_fn(void *arguments)
     while(1)
     {
 	//Без мьютексов так как изменяет данные только один данный поток, а чтением можно принебречь
-	if(status = recvfrom(*arg->listener_1, &CTSG, sizeof(CTSG), 0, (struct sockaddr *) arg->client,&arg->client_address_size) <0)
+	if(status = recv(*arg->listener_1, &CTSG, sizeof(CTSG), 0) <0)
+
 	{
 		printf("recvfrom()");
 		exit(4);
 	} 
 	else 
 	{
-		if (CTSG.act == 1)
+		if (CTSG.act == 'U')
 		{
-			arg->move = 1;
+		    if(CTSG.number==1)
+			arg->move_1 += 3;
+		    else
+			arg->move_2 += 3;
 			printf("Got U\n");
 		} 
-		if (CTSG.act == 2)
+		if (CTSG.act == 'D')
 		{
-			arg->move = 2;
+		    if(CTSG.number==1)
+			arg->move_1 -= 3;
+		    else
+			arg->move_2 -= 3;
 			printf ("GOt D\n");
 		}
 	}
@@ -98,15 +109,16 @@ void *listener_fn(void *arguments)
 	}
     
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(15302);
+	addr.sin_port = htons(15200);
 	inet_aton("127.0.0.1", &addr.sin_addr);
 	if(bind(listener_1, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 	{
     	    perror("bind");
     	    exit(2);
 	}
-    while(1)
-    {
+	
+    //while(1)
+    //{
 	client_address_size_1 = sizeof(client_1);
 	if(recvfrom(listener_1, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
 	{
@@ -129,17 +141,17 @@ void *listener_fn(void *arguments)
 		exit(1); /*выход из родительского процесса*/
 	    case 0:
 	    {
-			STCA.number=1;
+			STCA.number=2;
 			
-		if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
+		if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
 		{
 		    printf("sendto()");
 		    exit(2);
 		}
 		
-		STCA.number=2;
+		STCA.number=1;
 		strncpy(STCA.nikname,CTSC.nikname,sizeof(STCA.nikname));
-		if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
+		if (sendto(listener_1, &STCA, sizeof(STCA), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
 		{
 		    printf("sendto()");
 		    exit(2);
@@ -165,24 +177,30 @@ void *listener_fn(void *arguments)
 		LA1.listener_1=&listener_1;
 		LA1.client_address_size=client_address_size_1;
 		LA1.client=&client_1;
+		LA1.move_1=y_play_1;
+		LA1.move_2=y_play_1;
 		//LA1.y_play=&y_play_1;
 		
 		
-		struct ListenerArguments LA2;//Аргумент для слушателя игрока справа
-		bzero((char*)&LA2, sizeof(LA2));
-		LA2.listener_1=&listener_1;
-		LA2.client_address_size=client_address_size_2;
-		LA2.client=&client_2;
+		//struct ListenerArguments LA2;//Аргумент для слушателя игрока справа
+		//bzero((char*)&LA2, sizeof(LA2));
+		//LA2.listener_1=&listener_1;
+		//LA2.client_address_size=client_address_size_2;
+		//LA2.client=&client_2;
+		//LA2.move=y_play_2;
 		//LA2.y_play=&y_play_2;
 		
 		pthread_t p_listener_1;
-		pthread_t p_listener_2;
+		//pthread_t p_listener_2;
 		pthread_create(&p_listener_1,NULL,listener_fn,(void*)&LA1);
-		pthread_create(&p_listener_2,NULL,listener_fn,(void*)&LA2);
+		//pthread_create(&p_listener_2,NULL,listener_fn,(void*)&LA2);
 		
 		while(1)
 		{
-			if (LA1.move == 1){
+		    int i;
+		    for(i=0;i<40;i++)
+		    {
+			/*if (LA1.move == 1){
 				y_play_1 += 3;
 			}
 			if (LA1.move == 2){
@@ -193,7 +211,9 @@ void *listener_fn(void *arguments)
 			}
 			if (LA2.move == 2){
 				y_play_2 -= 3;
-			}
+			}*/
+			y_play_1=LA1.move_1;
+			y_play_2=LA1.move_2;
 			/*
 			printf("LA2 = %d\n", LA2.move);
 			printf("LA1 = %d\n", LA1.move);
@@ -204,34 +224,36 @@ void *listener_fn(void *arguments)
 			STCG.y_play_1=y_play_1;
 			STCG.y_play_2=y_play_2;
 			
- 		    //Отправляем сообщение игроку слева
-		    if(x_ball>=X_FIELD)
+ 			//Отправляем сообщение игроку слева
+			if(x_ball>=X_FIELD)
 				STCG.status='V';
-		    if(x_ball<=0)
+			if(x_ball<=0)
 				STCG.status='L';
-		    if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
-		    {
+			if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
+			{
 				printf("sendto()");
 				exit(2);
+			}
+			//Отправляем сообщение игроку справа
+			if(x_ball>=X_FIELD)
+		    	    STCG.status='L';
+			if(x_ball<=0)
+				    STCG.status='V';
+			if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
+			{
+				    printf("sendto()");
+				    exit(2);
+			}
+			usleep(12000);
 		    }
-		    //Отправляем сообщение игроку справа
-		    if(x_ball>=X_FIELD)
-		        STCG.status='L';
-		    if(x_ball<=0)
-				STCG.status='V';
-		    if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
-		    {
-				printf("sendto()");
-				exit(2);
-		    }
-		    
 		    //вынести в функцию но мне пока лень________________
 		    //Если мяч улетел за правого игрока
 		    if(x_ball>=X_FIELD)
 		    {
 			    x_ball=X_FIELD/2;
 			    y_ball=Y_FIELD/2;
-			    while(vct.x=rand()%3-1==0);
+			    //while(vct.x=rand()%3-1==0);
+			    vct.x=-1;
 					vct.y=rand()%3-1;
 		    }
 		    //Если мяч улетел за левого игрока
@@ -239,7 +261,8 @@ void *listener_fn(void *arguments)
 		    {
 			    x_ball=X_FIELD/2;
 			    y_ball=Y_FIELD/2;
-			    while(vct.x=rand()%3-1==0);
+			    //while(vct.x=rand()%3-1==0);
+			    vct.x=1;
 					vct.y=rand()%3-1;
 		    }
 		    
@@ -317,13 +340,13 @@ void *listener_fn(void *arguments)
 		    x_ball+=vct.x;
 		    y_ball+=vct.y;
 		    
-		    sleep(3);//Пока подольше для отладки
+		    usleep(12000);//Пока подольше для отладки
 		}
 		int status[2];
 		pthread_join(p_listener_1,(void **)&status[1]);
-		pthread_join(p_listener_2,(void **)&status[2]);
+		//pthread_join(p_listener_2,(void **)&status[2]);
 		exit(0);
 	    }
 	}
-    }
+    //}
 }
