@@ -117,18 +117,15 @@ void *listener_fn(void *arguments)
     	    exit(2);
 	}
 	
-<<<<<<< HEAD
 	
     while(1)
     {
 	client_address_size_2 = sizeof(client_1);
 	if(recvfrom(listener_2, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
-=======
     //while(1)
     //{
 	client_address_size_1 = sizeof(client_1);
-	if(recvfrom(listener_1, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
->>>>>>> d5c5ecb33b16441cf4b6683b631485c92f4e03f2
+	if(recvfrom(listener_2, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
 	{
     	    printf("recvfrom()");
     	    exit(4);
