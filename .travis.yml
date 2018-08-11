@@ -1,4 +1,3 @@
 language: c
-compiler: 
-	- gcc
+compiler: gcc
 script: make
