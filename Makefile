@@ -15,4 +15,4 @@ menu.o: menu.c
 secondary_f.o: secondary_f.c
 	gcc secondary_f.c -c
 clean:
-	rm -f Ping-Pong *.o *.gch Server Testserv
+	rm -f Ping-Pong *.o *.gch Server Client Testserv
