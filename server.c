@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <unistd.h> 
 #define X_FIELD 60//Размер поля x координаты
 #define Y_FIELD 30//Размер поля y координаты
 #define MID_RACKET 3//Размер середины ракетки (только нечётное число)
@@ -106,7 +107,7 @@ void *listener_fn(void *arguments)
 	}
     
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(15308);
+	addr.sin_port = htons(15200);
 	inet_aton("127.0.0.1", &addr.sin_addr);
 	if(bind(listener_1, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 	{
@@ -193,6 +194,9 @@ void *listener_fn(void *arguments)
 		
 		while(1)
 		{
+		    int i;
+		    for(i=0;i<40;i++)
+		    {
 			/*if (LA1.move == 1){
 				y_play_1 += 3;
 			}
@@ -217,34 +221,36 @@ void *listener_fn(void *arguments)
 			STCG.y_play_1=y_play_1;
 			STCG.y_play_2=y_play_2;
 			
- 		    //Отправляем сообщение игроку слева
-		    if(x_ball>=X_FIELD)
+ 			//Отправляем сообщение игроку слева
+			if(x_ball>=X_FIELD)
 				STCG.status='V';
-		    if(x_ball<=0)
+			if(x_ball<=0)
 				STCG.status='L';
-		    if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
-		    {
+			if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
+			{
 				printf("sendto()");
 				exit(2);
+			}
+			//Отправляем сообщение игроку справа
+			if(x_ball>=X_FIELD)
+		    	    STCG.status='L';
+			if(x_ball<=0)
+				    STCG.status='V';
+			if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
+			{
+				    printf("sendto()");
+				    exit(2);
+			}
+			usleep(12000);
 		    }
-		    //Отправляем сообщение игроку справа
-		    if(x_ball>=X_FIELD)
-		        STCG.status='L';
-		    if(x_ball<=0)
-				STCG.status='V';
-		    if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
-		    {
-				printf("sendto()");
-				exit(2);
-		    }
-		    
 		    //вынести в функцию но мне пока лень________________
 		    //Если мяч улетел за правого игрока
 		    if(x_ball>=X_FIELD)
 		    {
 			    x_ball=X_FIELD/2;
 			    y_ball=Y_FIELD/2;
-			    while(vct.x=rand()%3-1==0);
+			    //while(vct.x=rand()%3-1==0);
+			    vct.x=-1;
 					vct.y=rand()%3-1;
 		    }
 		    //Если мяч улетел за левого игрока
@@ -252,7 +258,8 @@ void *listener_fn(void *arguments)
 		    {
 			    x_ball=X_FIELD/2;
 			    y_ball=Y_FIELD/2;
-			    while(vct.x=rand()%3-1==0);
+			    //while(vct.x=rand()%3-1==0);
+			    vct.x=1;
 					vct.y=rand()%3-1;
 		    }
 		    
@@ -330,7 +337,7 @@ void *listener_fn(void *arguments)
 		    x_ball+=vct.x;
 		    y_ball+=vct.y;
 		    
-		    sleep(3);//Пока подольше для отладки
+		    usleep(12000);//Пока подольше для отладки
 		}
 		int status[2];
 		pthread_join(p_listener_1,(void **)&status[1]);
