@@ -19,7 +19,8 @@ struct ClientToServer{
 };
 
 struct gameClientToServer{
-	int move;
+	char  move;
+	short number;
 };
 
 struct gameServerToClient{
@@ -38,7 +39,8 @@ int main(){
 	struct ClientToServer CTS;
 	struct gameClientToServer gCTS;
 	struct gameServerToClient gSTC;
-	int sockfd = 0, slen = sizeof(serv_addr), portnum = 15302, goals = 0;
+	int sockfd = 0, slen = sizeof(serv_addr), portnum = 9999, goals = 0;
+	char key;
 	pid_t pid;
 	
 	bzero((char *) &CTS, sizeof(CTS));
@@ -62,42 +64,46 @@ int main(){
 	sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
 	
 	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
-	printf("My nick:%s\nNumber: %d\n", STC.nick, STC.number);
+	printf("Opp nick:%s\nNumber: %d\n", STC.nick, STC.number);
+	gCTS.number = STC.number;
 	
 	pid = fork();
-	if (pid == -1){
-		perror("fork");
-		exit(0);
-	} else {
-		if (pid == 0){
-			char key;
+	switch(pid){
+		case -1:
+			perror("fork");
+			exit(0);
+		case 0:
 			while (!exitflag){
 				key = getchar();
-				if (key == 'w'){
-						gCTS.move = 1;
-						puts("sending 1");
+						getchar();
+				switch(key){
+					case 'w':
+						gCTS.move = 'U';
+						puts("sending U");
 						sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
-				} else {
-					if (key == 's'){
-						gCTS.move = 2;
-						puts("sending 2");
+						break;
+					case 's':
+						gCTS.move = 'D';
+						puts("sending D");
 						sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
-					} else {
-						puts("vse ploha");
-					}
+						break;
+					default:
+						puts("wrong button");
 				}
 			}
-		} else {
+			break;
+		default:
 			while (goals < 5){
 				sleep(3);
-				if (recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr *)&serv_addr, &slen) > 0);
-				puts("got back struct");
-				printf ("x_ball = %d\ny_ball = %d\nxpl1 = %d\nypl1 = %d\n", gSTC.x_ball, gSTC.y_ball,
+				if (recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr *)&serv_addr, &slen) > 0){
+					puts("got back struct");
+					printf ("x_ball = %d\ny_ball = %d\nypl1 = %d\nypl2 = %d\n", gSTC.x_ball, gSTC.y_ball,
 						gSTC.y_player1,gSTC.y_player2);
+				}
 				//redraw screen();
 			}
 			exitflag = 1;
-		}
+			break;
 	}
 	return 0;
 }
