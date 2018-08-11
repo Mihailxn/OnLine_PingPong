@@ -9,7 +9,7 @@ int main(int argc, char ** argv){
 		switch(highlight){
 			case 0: info(2); pong(2); break;
 			case 1: info(1); pong(1); break;
-			case 2: info(2); pong(2); break;
+			case 2: info(2); pong(3); break;
 			default: break;
 		}
 	}	

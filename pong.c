@@ -3,16 +3,49 @@
 #include "pong.h"
 
 #define RAZMER_Y 20//высота игровогшо поля
-#define RAZMER_X 74//ширина игрового поля
+#define RAZMER_X 76//ширина игрового поля
+
+void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, char y_play){
+		/*
+		 *Здесь нужно взять полученные от сервера значения:
+		 * 	boll[0] - координата y мячика
+		 * 	boll[1] - координата x мячика 
+		 * 	y_play_1 - координата коретки соперника
+		 * 	y_play_2 - координата коретки игрока
+		 * 
+		 * 	y_play может принимать одну из букв i,d,u
+		 * 
+		 * Для отражения координат(надо отразить X мячика) использовать можно:
+		 * 	boll[0]=RAZMER_X-boll[0]; - должно работать
+		 * 
+		 * Значение score - нужно считать примерно так:
+		 * 	if (boll[1] == RAZMER_X){
+		 *	if (*y_play_1-boll[0]>1 || *y_play_1-boll[0]<-1){
+		 *			score[0]++;
+		 *		}
+		 *	} else {
+		 *	if(boll[1] == 0){
+		 *		if (*y_play_2-boll[0]>1 || *y_play_2-boll[0]<-1){
+		 *			score[1]++;
+		 *		}
+		 *	}	
+		 * 
+		 */
+		error("Mode not yet implemented");//временно
+		erase();//временно
+		refresh();//временно
+		endwin();//временно
+}
+
 
 void offline_play(short *boll, short *v, short *score, short y_play_1, short y_play_2){
 		//граница поля игры сверху или снизу
 		if (boll[0] == RAZMER_Y || boll[0] == 0)
 			v[0]*=-1;
 		//граница справа
-		if (boll[1] == RAZMER_X+1){
+		if (boll[1] == RAZMER_X){
 			if (y_play_1-boll[0]>1 || y_play_1-boll[0]<-1){
-				score[1]++;
+				score[0]++;
 				boll[0] = RAZMER_Y/2;
 				boll[1] = RAZMER_X/2; 
 			}
@@ -21,7 +54,7 @@ void offline_play(short *boll, short *v, short *score, short y_play_1, short y_p
 		//граница слева
 		if(boll[1] == 0){
 			if (y_play_2-boll[0]>1 || y_play_2-boll[0]<-1){
-				score[0]++;
+				score[1]++;
 				boll[0] = RAZMER_Y/2;
 				boll[1] = RAZMER_X/2;
 			}
@@ -38,15 +71,6 @@ void pong(short mod){
     start_color();
 	curs_set(FALSE);//прячем курсор
 	
-	if (mod!=1)
-	{
-		error("Mode not yet implemented");
-		erase();
-		refresh();
-		endwin();
-		return;
-	}
-	
 	//окна
 	WINDOW *score_wnd, *play_wnd, *box_wnd;
 	int time = 0;
@@ -55,6 +79,7 @@ void pong(short mod){
 	short y_play_2 = 10;//высота второй коретки
 	short boll[2] = {RAZMER_Y/2,RAZMER_X/2};//координаты мяча
 	short v[2] = {-1,1}; // направление вектора (вверх/вниз и влево/вправо)
+	char y_play = 'i';//для онлайн режима, используется для указания действия игрока
 	short esc = 0;
 	
 	//задаём цветовые пары
@@ -64,7 +89,7 @@ void pong(short mod){
 	
 	//размеры экрана
 	int yMax = RAZMER_Y+4;
-    int xMax = RAZMER_X+6;
+    int xMax = RAZMER_X+4;
     //ставим окно игры на середину окна терминала
     int point_start_wnd[2]={0};
     getmaxyx(stdscr, point_start_wnd[1], point_start_wnd[0]);
@@ -80,47 +105,113 @@ void pong(short mod){
 	box(box_wnd, 0, 0);
 	wrefresh(box_wnd);
 	
+	//void (*play)(short *, short *, short *, short *, short *);
+	
     keypad(play_wnd, true);
 	noecho();
 	
 	for (nodelay(play_wnd,1); esc==0; usleep(2000)){
-		if(++time%40==0){
-			offline_play(boll, v, score, y_play_1, y_play_2);
-		}
-		switch(wgetch(play_wnd)){
-			case KEY_UP:
-				y_play_1--;
-				if (y_play_1 == -1)
-					y_play_1 = 0;
+		switch(mod){
+			case 1:
+			{
+				//присвоить указателю функцию
+				if(++time%40==0){
+					offline_play(boll, v, score, y_play_1, y_play_2);
+				}
+				switch(wgetch(play_wnd)){
+					case KEY_UP:
+						y_play_1--;
+						if (y_play_1 == -1)
+						y_play_1 = 0;
+						break;
+					case KEY_DOWN:
+						y_play_1++;
+						if (y_play_1 == yMax-3)
+						y_play_1 = yMax-4;
+						break;
+					case 'w':
+						y_play_2--;
+						if (y_play_2 == -1)
+						y_play_2 = 0;
+						break;
+					case 's':
+						y_play_2++;
+						if (y_play_2 == yMax-3)
+						y_play_2 = yMax-4;
+						break;
+					case 'p':
+						getchar();
+						break;
+					case 0x1B: // ESC (выход)
+						esc =-1;
+						break;
+					default:
+						break;			
+				}
 				break;
-			case KEY_DOWN:
-				y_play_1++;
-				if (y_play_1 == yMax-3)
-					y_play_1 = yMax-4;
-				break;
-			case 'w':
-				y_play_2--;
-				if (y_play_2 == -1)
-					y_play_2 = 0;
-				break;
-			case 's':
-				y_play_2++;
-				if (y_play_2 == yMax-3)
-					y_play_2 = yMax-4;
-				break;
-			case 'p':
-				getchar();
-				break;
-			case 0x1B: // ESC (выход)
-				esc =-1;
-				break;
-			default:
-				break;			
+			}
+			case 2:
+			{	
+				online_play(boll, score, &y_play_1, &y_play_2, y_play);
+				switch(wgetch(play_wnd)){
+					case KEY_UP:
+						y_play = 'd';
+						break;
+					case KEY_DOWN:
+						y_play = 'u';
+						break;
+					case 0x1B: // ESC (выход)
+						esc =-1;
+						break;
+					default:
+						break;			
+				}
+				return;//временно
+			}
+			case 3:
+			{
+				/*работа бота
+				*
+				* ЗДЕСЬ
+				* ДОЛЖНА
+				* БЫТЬ
+				* РЕАЛИЗОВАНА
+				* РАБОТА
+				* БОТА
+				*
+				*/
+				switch(wgetch(play_wnd)){
+					case KEY_UP:
+						y_play_1--;
+						if (y_play_1 == -1)
+						y_play_1 = 0;
+						break;
+					case KEY_DOWN:
+						y_play_1++;
+						if (y_play_1 == yMax-3)
+						y_play_1 = yMax-4;
+						break;
+					case 'p': //пауза
+						getchar();
+						break;
+					case 0x1B: // ESC (выход)
+						esc =-1;
+						break;
+					default:
+						break;			
+				}
+				error("Mode not yet implemented");//временно
+				erase();//временно
+				refresh();//временно
+				endwin();//временно
+				return;//временно
+			}
+		
 		}
 		if (esc<0) break;
 		werase(play_wnd);
 		mvwprintw(score_wnd, 0, xMax/2-3, "%i | %i", score[0], score[1]);
-		mvwvline(play_wnd,0,RAZMER_X/2+1,ACS_VLINE,RAZMER_Y+1);
+		mvwvline(play_wnd,0,RAZMER_X/2,ACS_VLINE,RAZMER_Y+1);
 		wattron(play_wnd,COLOR_PAIR(1) | A_BOLD);
 		mvwprintw(play_wnd,boll[0],boll[1],"o");
 		int i;
