@@ -14,10 +14,10 @@
 
 #define X_FIELD 76//Размер поля x координаты
 #define Y_FIELD 20//Размер поля y координаты
-#define MID_RACKET 3//Размер середины ракетки (только нечётное число)
-#define SIDE_RACKET 2//Размер боковой части ракетки
+#define MID_RACKET 1//Размер середины ракетки (только нечётное число)
+#define SIDE_RACKET 1//Размер боковой части ракетки
 #define END_RACKET 1//Размер крайней части ракетки
-#define GAME_SPEED 500000//За сколько наносекунд произойдёт такт
+#define GAME_SPEED 200000//За сколько наносекунд произойдёт такт
 
  struct Vector//Структура движения шарика в следующий такт времени
 {
@@ -27,6 +27,7 @@
  struct ClientToServerConnect
 {
     char nikname[15];//Имя Игорька
+    char escape;
 }/*CTSC*/;
  struct ServerToClientAccept
 {
@@ -79,17 +80,17 @@ void *listener_fn(void *arguments)
 		if (CTSG.act == 'U')
 		{
 		    if(CTSG.number==1)
-			arg->move_1 += 3;
+			arg->move_1 -= 1;
 		    else
-			arg->move_2 += 3;
+			arg->move_2 -= 1;
 			printf("Got U\n");
 		} 
 		if (CTSG.act == 'D')
 		{
 		    if(CTSG.number==1)
-			arg->move_1 -= 3;
+			arg->move_1 += 1;
 		    else
-			arg->move_2 -= 3;
+			arg->move_2 += 1;
 			printf ("GOt D\n");
 		}
 	}
@@ -138,6 +139,8 @@ void *listener_fn(void *arguments)
 				printf("recvfrom()");
 				exit(4);
 		}
+		if(CTSC.escape=='E')
+		continue;
 		port++;
 		pid_t pid;
 		switch(pid=fork())

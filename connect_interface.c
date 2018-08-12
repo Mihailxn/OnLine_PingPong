@@ -37,18 +37,23 @@ void teke_connect(char *nikname_1, char *nikname_2){
 	inet_aton("127.0.0.1", &serv_addr.sin_addr);
 	
 	strncpy(CTS.nick, nikname_1, sizeof(CTS.nick));
-	
+	CTS.here = 'H';
 	sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
-	/*mvwprintw(connect_load_wnd, 2,1, "\tInfoSent\t");
-	wrefresh(connect_load_wnd);*/
-	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
+	
+	
+	/*Relizovat otval po najatiu esc
+	 * CTS.here = 'E'
+	 * sendto()
+	 * 
+	 */
+	
+	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen)
+	
+
+	//recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
 	nikname_2 = STC.nick;
 	gCTS.number = STC.number;
-	/*mvwprintw(connect_load_wnd, 2,1, "\tGot: %s\t", STC.nick);
-	gCTS.number = STC.number;*/
-	wrefresh(connect_load_wnd);
 	
-    getch();//временнно
 	delwin(connect_load_wnd);
 }
 
@@ -61,6 +66,10 @@ void sender(char y_play){
 			break;
 		case 'd':
 			gCTS.move = 'D';
+			sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
+			break;
+		case 'g':
+			gCTS.move = 'G';
 			sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
 			break;
 		default:
@@ -85,5 +94,7 @@ void receiver(short *boll, short *score, short *y_play_1, short *y_play_2){
 			score[0]++;
 		else if (gSTC.res == 'L')
 			score[1]++;
+		else if (gSTC.res == 'C')
+			score[0] = 15;
 	}
 }
