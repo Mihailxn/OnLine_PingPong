@@ -3,6 +3,8 @@
 #include <unistd.h> 
 #include "pong.h"
 
+#define MAX_NAME_LEN 15
+
 /*
 void sig_winch(int signo){
     struct winsize size;
@@ -16,13 +18,30 @@ void error(char *str){
 	curs_set(FALSE);
 	WINDOW *error_wnd;
 	init_pair(1, COLOR_BLACK, COLOR_RED);
-	error_wnd = newwin(4, xMax/2, yMax/4, xMax/4);
+	error_wnd = newwin(5, xMax/2, yMax/4, xMax/4);
 	wbkgd(error_wnd, COLOR_PAIR(1));
-	mvwprintw(error_wnd, 1,1, "%s", str);
+	mvwprintw(error_wnd, 2,1, "\t%s", str);
     wrefresh(error_wnd);
     getch();
-    //werase(error_wnd);
     delwin(error_wnd);
+}
+
+void enter_nikname(char *nikname){
+	int yMax, xMax;
+    getmaxyx(stdscr, yMax, xMax);
+	curs_set(TRUE);
+	echo();
+	WINDOW *nikname_wnd;
+	init_pair(4, COLOR_BLACK, COLOR_WHITE);
+	nikname_wnd = newwin(4, xMax/2, yMax/4, xMax/4);
+	wbkgd(nikname_wnd, COLOR_PAIR(4));
+	mvwprintw(nikname_wnd, 1,1, "\tEnter your nikname\n\t");
+    wrefresh(nikname_wnd);
+    wgetnstr(nikname_wnd, nikname, MAX_NAME_LEN);
+    nikname[MAX_NAME_LEN] = 0;
+    curs_set(FALSE);
+    noecho();
+    delwin(nikname_wnd);
 }
 
 void print_load_game(){
