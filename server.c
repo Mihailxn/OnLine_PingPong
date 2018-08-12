@@ -18,6 +18,7 @@
 #define SIDE_RACKET 1//Размер боковой части ракетки
 #define END_RACKET 1//Размер крайней части ракетки
 #define GAME_SPEED 200000//За сколько наносекунд произойдёт такт
+#define BOLL_SPEED 24//чем число меньше, тем быстрее мяч, скорость ракеток не изменяется
 
  struct Vector//Структура движения шарика в следующий такт времени
 {
@@ -252,7 +253,7 @@ void *listener_fn(void *arguments)
 								exit(2);
 						}
 						
-						for(i=0;i<39;i++)
+						for(i=0;i<BOLL_SPEED;i++)
 						{
 						    y_play_1=LA1.move_1;
 						    y_play_2=LA1.move_2;

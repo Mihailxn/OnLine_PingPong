@@ -77,8 +77,7 @@ void enter_nikname(char *nikname){
 void loading(char *text_str){
 	int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
-	//char str[] = "Expection of an opponent";
-    //init_pair(4, COLOR_CYAN, COLOR_BLACK);
+	//init_pair(4, COLOR_CYAN, COLOR_BLACK);
     //init_pair(5, COLOR_BLUE, COLOR_BLACK);
 	wbkgd(stdscr, COLOR_PAIR(5) | A_BOLD);
 	mvprintw(yMax/3-1,(xMax-strlen(text_str))/2, text_str);
@@ -196,4 +195,13 @@ void info(short mod){
 	erase();
     refresh();
     endwin();
+}
+
+int getCountsOfDigits(int number) {
+	int count = (number == 0) ? 1 : 0;
+	while (number != 0) {
+		count++;
+		number /= 10;
+	}
+	return count;
 }

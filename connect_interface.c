@@ -5,7 +5,6 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-//#include <wait.h>
 #include "pong.h"
 
 struct sockaddr_in serv_addr;
@@ -35,25 +34,20 @@ void teke_connect(char *nikname_1, char *nikname_2){
 	CTS.here = 'H';
 	sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
 
-	/*Relizovat otval po najatiu esc
-	 * CTS.here = 'E'
-	 * sendto()
-	 * 
-	 */
+	/*
+	if (getch()==10){
+		CTS.here = 'E';
+		sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
+		erase();
+		refresh();
+		return();
+	}
+	*/
 	
 	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
+	
 	gCTS.number = STC.number;
 	strncpy(nikname_2, STC.nick, sizeof(STC.nick));
-	
-	/*while(1){
-		if (getch()==10){
-			CTS.here = 'E'
-			sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
-			erase();
-			refresh();
-			return;
-		}
-	}*/
 	
 	erase();
 	refresh();	
@@ -98,5 +92,10 @@ void receiver(short *boll, short *score, short *y_play_1, short *y_play_2){
 			score[1]++;
 		else if (gSTC.res == 'C')
 			score[0] = 15;
+		//ЗДЕСЬ ЗНАЧЕНИЯ ОЧЕНЬ СТАБИЛЬНЫЕ
 	}
+	/* 
+	 * А здесь сама не стабильность
+	 * Это значит, что корявые значения появляются только когда условие не выполняется
+	 */
 }

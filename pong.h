@@ -20,6 +20,7 @@ void print_end_game();
 void info(short);
 void enter_nikname(char *);
 void loading(char *);
+int getCountsOfDigits(int);
 
 //connect_interface.c
 void teke_connect(char *, char *);

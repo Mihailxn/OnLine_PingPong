@@ -23,6 +23,7 @@ void pong(short mod){
 	short v[2] = {-1,1}; // направление вектора (вверх/вниз и влево/вправо)
 	char y_play = 'i';//для онлайн режима, используется для указания действия игрока
 	short esc = 0;
+	short i;//для цикла
 	
 	//задаём цветовые пары
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
@@ -118,6 +119,7 @@ void pong(short mod){
 				}
 				sender(y_play);
 				receiver(boll, score, &y_play_1, &y_play_2);
+				break;
 			}
 			case 3:
 			{
@@ -145,15 +147,15 @@ void pong(short mod){
 						break;
 				}
 				y_play_1 += bot(boll, v, RIGHT, y_play_1);
+				break;
 			}
 		}
 		if (esc<0) break;
 		werase(play_wnd);
-		mvwprintw(score_wnd, 0, xMax/2-3, "%i | %i", score[0], score[1]);
+		mvwprintw(score_wnd, 0, xMax/2-2-getCountsOfDigits(score[0]), "%i | %i", score[0], score[1]);
 		mvwvline(play_wnd,0,RAZMER_X/2,ACS_VLINE,RAZMER_Y+1);
 		wattron(play_wnd,COLOR_PAIR(1) | A_BOLD);
 		mvwprintw(play_wnd,boll[0],boll[1],"o");
-		int i;
 		for(i=-1;i<2;i++){
 			mvwprintw(play_wnd,y_play_2+i,0,"|");
 			mvwprintw(play_wnd,y_play_1+i,xMax-3,"|");
