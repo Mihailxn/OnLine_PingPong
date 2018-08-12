@@ -114,6 +114,7 @@ void *listener_fn(void *arguments)
 	addres.sin_port = htons(port);
 	inet_aton("127.0.0.1", &addres.sin_addr);
 	if(bind(listener_2, (struct sockaddr *)&addres, sizeof(addres)) < 0)
+
 	{
     	    perror("bind");
     	    exit(2);
