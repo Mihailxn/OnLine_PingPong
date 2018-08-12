@@ -21,12 +21,7 @@ void teke_connect(char *nikname_1, char *nikname_2){
 	wbkgd(connect_load_wnd, COLOR_PAIR(5));
 	mvwprintw(connect_load_wnd, 2,1, "\tExpection of an opponent\t");
     wrefresh(connect_load_wnd);
-    //тут установить соединение, 
-    //отправив nikname_1 
-    //и получив nikname_2
-	
-	//int sockfd, slen = sizeof(serv_addr);
-	int portnum = 30022;
+    int portnum = 30022;
 	
 	bzero((char *) &CTS, sizeof(CTS));
 	bzero((char *) &STC, sizeof(STC));
