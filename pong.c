@@ -131,9 +131,8 @@ void pong(short mod){
 			}
 			case 2:
 			{	
-				sender(y_play);
-				receiver(boll, score, &y_play_1, &y_play_2);
-				switch(wgetch(play_wnd)){
+        y_play = 'g';
+        switch(wgetch(play_wnd)){
 					case KEY_UP:
 						y_play = 'd';
 						break;
@@ -146,6 +145,8 @@ void pong(short mod){
 					default:
 						break;			
 				}
+				sender(y_play);
+				receiver(boll, score, &y_play_1, &y_play_2);
 			}
 			case 3:
 			{
