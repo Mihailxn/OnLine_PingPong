@@ -5,28 +5,23 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+//#include <wait.h>
 #include "pong.h"
 
 struct sockaddr_in serv_addr;
 int sockfd, slen = sizeof(serv_addr), goals;
 
 void teke_connect(char *nikname_1, char *nikname_2){
-	int yMax, xMax;
 	
-    getmaxyx(stdscr, yMax, xMax);
-	curs_set(FALSE);
-	WINDOW *connect_load_wnd;
-	init_pair(5, COLOR_BLUE, COLOR_BLACK);
-	connect_load_wnd = newwin(5, xMax/2, yMax/4, xMax/4);
-	wbkgd(connect_load_wnd, COLOR_PAIR(5));
-	mvwprintw(connect_load_wnd, 2,1, "\tExpection of an opponent\t");
-    wrefresh(connect_load_wnd);
-    int portnum = 30022;
+	char str[] = "Expection of an opponent";
+	int portnum = 30022;
 	
 	bzero((char *) &CTS, sizeof(CTS));
 	bzero((char *) &STC, sizeof(STC));
 	bzero((char *) &serv_addr, sizeof(serv_addr));
 	
+	loading(str);//отображение окна ожидания
+ 
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if(sockfd <= 0){
 		perror ("socket");
@@ -39,8 +34,7 @@ void teke_connect(char *nikname_1, char *nikname_2){
 	strncpy(CTS.nick, nikname_1, sizeof(CTS.nick));
 	CTS.here = 'H';
 	sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
-	
-	
+
 	/*Relizovat otval po najatiu esc
 	 * CTS.here = 'E'
 	 * sendto()
@@ -48,13 +42,21 @@ void teke_connect(char *nikname_1, char *nikname_2){
 	 */
 	
 	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
-	
-
-	//recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
-	nikname_2 = STC.nick;
 	gCTS.number = STC.number;
+	strncpy(nikname_2, STC.nick, sizeof(STC.nick));
 	
-	delwin(connect_load_wnd);
+	/*while(1){
+		if (getch()==10){
+			CTS.here = 'E'
+			sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
+			erase();
+			refresh();
+			return;
+		}
+	}*/
+	
+	erase();
+	refresh();	
 }
 
 

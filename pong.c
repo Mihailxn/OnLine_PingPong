@@ -41,6 +41,15 @@ void pong(short mod){
 	score_wnd = newwin(1, xMax, point_start_wnd[1], point_start_wnd[0]);
 	box_wnd = newwin(yMax-1, xMax, point_start_wnd[1]+1, point_start_wnd[0]);
 	play_wnd = newwin(yMax-3, xMax-2, point_start_wnd[1]+2, point_start_wnd[0]+1);
+	//если режим онлайн игры
+	if (mod == 2){
+		char nikname_1[MAX_NAME_LEN], nikname_2[MAX_NAME_LEN];
+		enter_nikname(nikname_1);
+		teke_connect(nikname_1, nikname_2);
+		mvwprintw(score_wnd, 0, 0, nikname_1);
+		mvwprintw(score_wnd, 0, xMax-strlen(nikname_2), nikname_2);
+		wrefresh(score_wnd);
+	}
 	wbkgd(score_wnd, COLOR_PAIR(1));
 	wbkgd(box_wnd, COLOR_PAIR(2));
 	wattron(score_wnd, A_BOLD);
@@ -51,17 +60,6 @@ void pong(short mod){
 	
     keypad(play_wnd, true);
 	noecho();
-	
-	//если режим онлайн игры
-	if (mod == 2){
-		char nikname_1[MAX_NAME_LEN], nikname_2[MAX_NAME_LEN];
-		enter_nikname(nikname_1);
-		teke_connect(nikname_1, nikname_2);
-		mvwprintw(score_wnd, 0, 0, nikname_1);
-		mvwprintw(score_wnd, 0, xMax-strlen(nikname_2), nikname_2);
-		wrefresh(score_wnd);
-	}
-	
 	
 	for (nodelay(play_wnd,1); esc==0; usleep(2000)){
     switch(mod){

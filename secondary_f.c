@@ -1,5 +1,6 @@
 #include <sys/ioctl.h>
 #include <ncurses.h>
+#include <string.h>
 #include <unistd.h> 
 #include "pong.h"
 
@@ -55,17 +56,37 @@ void enter_nikname(char *nikname){
     getmaxyx(stdscr, yMax, xMax);
 	curs_set(TRUE);
 	echo();
-	WINDOW *nikname_wnd;
-	init_pair(4, COLOR_BLACK, COLOR_WHITE);
-	nikname_wnd = newwin(4, xMax/2, yMax/4, xMax/4);
-	wbkgd(nikname_wnd, COLOR_PAIR(4));
-	mvwprintw(nikname_wnd, 1,1, "\tEnter your nikname\n\t");
-    wrefresh(nikname_wnd);
-    wgetnstr(nikname_wnd, nikname, MAX_NAME_LEN);
+	char str[] = "Enter your nikname";
+    init_pair(4, COLOR_CYAN, COLOR_BLACK);
+    init_pair(5, COLOR_BLUE, COLOR_BLACK);
+	wbkgd(stdscr, COLOR_PAIR(5) | A_BOLD);
+	mvprintw(yMax/3-1,(xMax-strlen(str))/2, str);
+    attron(COLOR_PAIR(1));
+	box(stdscr, 0, 0);
+	attroff(COLOR_PAIR(4));
+    refresh();
+    move(yMax/3+1,(xMax-strlen(str))/2);
+    getnstr(nikname, MAX_NAME_LEN);
     nikname[MAX_NAME_LEN] = 0;
     curs_set(FALSE);
     noecho();
-    delwin(nikname_wnd);
+    erase();
+    refresh();
+}
+
+void loading(char *text_str){
+	int yMax, xMax;
+    getmaxyx(stdscr, yMax, xMax);
+	//char str[] = "Expection of an opponent";
+    //init_pair(4, COLOR_CYAN, COLOR_BLACK);
+    //init_pair(5, COLOR_BLUE, COLOR_BLACK);
+	wbkgd(stdscr, COLOR_PAIR(5) | A_BOLD);
+	mvprintw(yMax/3-1,(xMax-strlen(text_str))/2, text_str);
+    attron(COLOR_PAIR(4));
+	box(stdscr, 0, 0);
+	attroff(COLOR_PAIR(4));
+    refresh();
+    //erase();
 }
 
 void print_load_game(){

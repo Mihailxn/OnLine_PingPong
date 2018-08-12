@@ -19,6 +19,7 @@ void print_load_game();
 void print_end_game();
 void info(short);
 void enter_nikname(char *);
+void loading(char *);
 
 //connect_interface.c
 void teke_connect(char *, char *);
