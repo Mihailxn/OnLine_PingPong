@@ -47,7 +47,7 @@ void teke_connect(char *nikname_1, char *nikname_2){
 	 * 
 	 */
 	
-	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen)
+	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
 	
 
 	//recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);

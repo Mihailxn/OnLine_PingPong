@@ -104,13 +104,13 @@ void pong(short mod){
 			}
 			case 2:
 			{	
-        y_play = 'g';
-        switch(wgetch(play_wnd)){
+				y_play = 'g';
+				switch(wgetch(play_wnd)){
 					case KEY_UP:
-						y_play = 'd';
+						y_play = 'u';
 						break;
 					case KEY_DOWN:
-						y_play = 'u';
+						y_play = 'd';
 						break;
 					case 0x1B: // ESC (выход)
 						esc =-1;
