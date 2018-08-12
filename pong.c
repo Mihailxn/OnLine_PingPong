@@ -71,7 +71,6 @@ short prediction(short *boll, short *v, short position){
 
 short bot(short *boll, short *v, short position, short player_y){
 	short target_y;
-	int chance;
 	short status_bot = 0;
 	if(position == LEFT){
 		if(boll[1] < RAZMER_X/2){
@@ -115,50 +114,6 @@ short bot(short *boll, short *v, short position, short player_y){
 	}
 	return 0;
 }
-
-//int prediction(short *boll, short *v, short player, short position){
-//	short new_vector_x = v[1];
-//	short new_vector_y = v[0];
-//	short vector_x = v[1];
-//	short vector_y = v[0];
-//	short new_x = boll[1];
-//	short new_y = boll[0];
-//	short after_x = boll[1];
-//	short after_y = boll[0];
-//	if(position == LEFT){
-//		if((after_x < RAZMER_X/2) && (new_vector_x < 0)){
-//			while(after_x > 0){
-//				after_x += vector_x;
-//				if((after_y == RAZMER_Y) || (after_y == 0))
-//					vector_y *= -1;
-//				after_y += vector_y;
-//			}
-//			if(player > after_y)
-//				return -1;
-//			if(player < after_y)
-//				return +1;
-//			if(player == after_y)
-//				return 0;
-//		}
-//	}
-//	if(position == RIGHT){
-//		if((after_x > RAZMER_X/2) && (new_vector_x > 0)){
-//			while(after_x < (RAZMER_X)){
-//				after_x += vector_x;
-//				if((after_y == RAZMER_Y) || (after_y == 0))
-//					vector_y *= -1;
-//				after_y += vector_y;
-//			}
-//			if(player > after_y)
-//				return -1;
-//			if(player < after_y)
-//				return +1;
-//			if(player == after_y)
-//				return 0;
-//		}
-//	}
-//	return 0;
-//}
 
 void offline_play(short *boll, short *v, short *score, short y_play_1, short y_play_2){
 		//граница поля игры сверху или снизу
