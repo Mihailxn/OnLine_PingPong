@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ncurses.h>
 #include <unistd.h>
-#include <pthread.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -39,7 +37,7 @@ int main(){
 	struct ClientToServer CTS;
 	struct gameClientToServer gCTS;
 	struct gameServerToClient gSTC;
-	int sockfd = 0, slen = sizeof(serv_addr), portnum = 11111, goals = 0;
+	int sockfd = 0, slen = sizeof(serv_addr), portnum = 30022, goals = 0;
 	short swaptmp;
 	char key;
 	pid_t pid;
