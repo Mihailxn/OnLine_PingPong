@@ -35,7 +35,6 @@ struct ServerToClient{
 
 struct ClientToServer{
 	char nick[15];
-	char here;
 }CTS;
 
 struct gameClientToServer{
