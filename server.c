@@ -108,10 +108,17 @@ void *listener_fn(void *arguments)
     	    exit(1);
 	}
     
+<<<<<<< HEAD
 	addres.sin_family = AF_INET;
 	addres.sin_port = htons(port);
 	inet_aton("127.0.0.1", &addres.sin_addr);
 	if(bind(listener_2, (struct sockaddr *)&addres, sizeof(addres)) < 0)
+=======
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(11111);
+	inet_aton("127.0.0.1", &addr.sin_addr);
+	if(bind(listener_1, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+>>>>>>> 681caeebdae64f6ab63f8d4be11eb1e1fe2298c9
 	{
     	    perror("bind");
     	    exit(2);
