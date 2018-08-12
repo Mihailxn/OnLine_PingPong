@@ -80,17 +80,17 @@ void *listener_fn(void *arguments)
 		if (CTSG.act == 'U')
 		{
 		    if(CTSG.number==1)
-			arg->move_1 += 3;
+			arg->move_1 -= 1;
 		    else
-			arg->move_2 += 3;
+			arg->move_2 -= 1;
 			printf("Got U\n");
 		} 
 		if (CTSG.act == 'D')
 		{
 		    if(CTSG.number==1)
-			arg->move_1 -= 3;
+			arg->move_1 += 1;
 		    else
-			arg->move_2 -= 3;
+			arg->move_2 += 1;
 			printf ("GOt D\n");
 		}
 	}
