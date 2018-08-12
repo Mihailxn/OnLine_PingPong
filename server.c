@@ -275,13 +275,11 @@ void *listener_fn(void *arguments)
 						    }
 						    usleep(GAME_SPEED/40);
 						}
-					//вынести в функцию но мне пока лень________________
 					//Если мяч улетел за правого игрока
 					if(x_ball>=X_FIELD)
 					{
 						x_ball=X_FIELD/2;
 						y_ball=Y_FIELD/2;
-						//while(vct.x=rand()%3-1==0);
 						vct.x=-1;
 							vct.y=rand()%3-1;
 					}

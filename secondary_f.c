@@ -85,7 +85,6 @@ void loading(char *text_str){
 	box(stdscr, 0, 0);
 	attroff(COLOR_PAIR(4));
     refresh();
-    //erase();
 }
 
 void print_load_game(){

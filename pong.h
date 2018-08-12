@@ -52,13 +52,3 @@ struct gameServerToClient{
 	short y_player2;
 	char res;
 }gSTC;
-
-/*
-struct sockaddr_in serv_addr;
-int sockfd, slen = sizeof(serv_addr);
-struct sockaddr_in serv_addr;
-struct ServerToClient STC;
-struct ClientToServer CTS;
-struct gameClientToServer gCTS;
-struct gameServerToClient gSTC;
-*/

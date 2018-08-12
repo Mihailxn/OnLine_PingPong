@@ -57,8 +57,6 @@ void pong(short mod){
 	box(box_wnd, 0, 0);
 	wrefresh(box_wnd);
 	
-	//void (*play)(short *, short *, short *, short *, short *);
-	
     keypad(play_wnd, true);
 	noecho();
 	
