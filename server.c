@@ -17,6 +17,7 @@
 #define MID_RACKET 3//Размер середины ракетки (только нечётное число)
 #define SIDE_RACKET 2//Размер боковой части ракетки
 #define END_RACKET 1//Размер крайней части ракетки
+#define GAME_SPEED 500000//За сколько наносекунд произойдёт такт
 
  struct Vector//Структура движения шарика в следующий такт времени
 {
@@ -247,7 +248,29 @@ void *listener_fn(void *arguments)
 								printf("sendto()");
 								exit(2);
 						}
-						//usleep(12000);
+						
+						for(i=0;i<39;i++)
+						{
+						    y_play_1=LA1.move_1;
+						    y_play_2=LA1.move_2;
+						
+						    STCG.status='G';
+						    STCG.x_ball=x_ball;
+						    STCG.y_ball=y_ball;
+						    STCG.y_play_1=y_play_1;
+						    STCG.y_play_2=y_play_2;
+						    if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
+						    {
+							printf("sendto()");
+							exit(2);
+						    }
+						    if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
+						    {
+							printf("sendto()");
+							exit(2);
+						    }
+						    usleep(GAME_SPEED/40);
+						}
 					//вынести в функцию но мне пока лень________________
 					//Если мяч улетел за правого игрока
 					if(x_ball>=X_FIELD)
@@ -342,7 +365,7 @@ void *listener_fn(void *arguments)
 					x_ball+=vct.x;
 					y_ball+=vct.y;
 					
-					usleep(12000);//Пока подольше для отладки
+					usleep(GAME_SPEED/40);//Пока подольше для отладки
 				}
 				int status[2];
 				pthread_join(p_listener_1,(void **)&status[1]);
