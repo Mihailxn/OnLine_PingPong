@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ncurses.h>
 #include <unistd.h>
-#include <pthread.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -39,7 +37,8 @@ int main(){
 	struct ClientToServer CTS;
 	struct gameClientToServer gCTS;
 	struct gameServerToClient gSTC;
-	int sockfd = 0, slen = sizeof(serv_addr), portnum = 9999, goals = 0;
+	int sockfd = 0, slen = sizeof(serv_addr), portnum = 30022, goals = 0;
+	short swaptmp;
 	char key;
 	pid_t pid;
 	
@@ -75,7 +74,7 @@ int main(){
 		case 0:
 			while (!exitflag){
 				key = getchar();
-						getchar();
+				getchar();
 				switch(key){
 					case 'w':
 						gCTS.move = 'U';
@@ -94,8 +93,13 @@ int main(){
 			break;
 		default:
 			while (goals < 5){
-				sleep(3);
 				if (recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr *)&serv_addr, &slen) > 0){
+					if (STC.number == 2){
+						gSTC.x_ball = 60 - gSTC.x_ball;
+						swaptmp = gSTC.y_player1;
+						gSTC.y_player1 = gSTC.y_player2;
+						gSTC.y_player2 = swaptmp;
+					}
 					puts("got back struct");
 					printf ("x_ball = %d\ny_ball = %d\nypl1 = %d\nypl2 = %d\n", gSTC.x_ball, gSTC.y_ball,
 						gSTC.y_player1,gSTC.y_player2);
@@ -105,5 +109,6 @@ int main(){
 			exitflag = 1;
 			break;
 	}
+	
 	return 0;
 }

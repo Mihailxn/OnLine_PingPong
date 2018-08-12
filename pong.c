@@ -1,6 +1,9 @@
 #include <ncurses.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
+#include <string.h> 
+#include <sys/socket.h>
+#include <sys/types.h>
 #include <stdlib.h> 
 #include "pong.h"
 
@@ -37,10 +40,15 @@ void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, ch
 		 *	}	
 		 * 
 		 */
+	sender(y_play);
+	receiver(boll, score, &*y_play_1, &*y_play_2);
+		 
+		 
+		/*
 		error("Mode not yet implemented");//временно
-		erase();//временно
-		refresh();//временно
-		endwin();//временно
+		erase();//временно*/
+	refresh();//временно
+		//endwin();//временно
 }
 
 short prediction(short *boll, short *v, short position){
@@ -253,7 +261,7 @@ void pong(short mod){
 					default:
 						break;			
 				}
-				return;//временно
+				//return;//временно
 			}
 			case 3:
 			{
