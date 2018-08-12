@@ -208,7 +208,7 @@ void *listener_fn(void *arguments)
 				while(1)
 				{
 					int i;
-					//Dlya plavnosti igri cikl
+					
 						y_play_1=LA1.move_1;
 						y_play_2=LA1.move_2;
 						
@@ -342,7 +342,7 @@ void *listener_fn(void *arguments)
 					x_ball+=vct.x;
 					y_ball+=vct.y;
 					
-					usleep(12000);//Пока подольше для отладки
+					usleep(200000);//Пока подольше для отладки
 				}
 				int status[2];
 				pthread_join(p_listener_1,(void **)&status[1]);
