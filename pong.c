@@ -7,122 +7,6 @@
 #include <stdlib.h> 
 #include "pong.h"
 
-#define RAZMER_Y 20//высота игровогшо поля
-#define RAZMER_X 76//ширина игрового поля
-#define MAX_NAME_LEN 15
-#define LEFT 1//сторона бота
-#define RIGHT 2//сторона бота
-#define WIN_RATE 70//шанс что бот НЕ пропустит шарик 
-
-void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, char y_play){
-		/*
-		 *Здесь нужно взять полученные от сервера значения:
-		 * 	boll[0] - координата y мячика
-		 * 	boll[1] - координата x мячика 
-		 * 	y_play_1 - координата коретки соперника
-		 * 	y_play_2 - координата коретки игрока
-		 * 
-		 * 	y_play может принимать одну из букв i,d,u
-		 * 
-		 * Для отражения координат(надо отразить X мячика) использовать можно:
-		 * 	boll[0]=RAZMER_X-boll[0]; - должно работать
-		 * 
-		 * Значение score - нужно считать примерно так:
-		 * 	if (boll[1] == RAZMER_X){
-		 *	if (*y_play_1-boll[0]>1 || *y_play_1-boll[0]<-1){
-		 *			score[0]++;
-		 *		}
-		 *	} else {
-		 *	if(boll[1] == 0){
-		 *		if (*y_play_2-boll[0]>1 || *y_play_2-boll[0]<-1){
-		 *			score[1]++;
-		 *		}
-		 *	}	
-		 * 
-		 */
-	sender(y_play);
-	receiver(boll, score, &*y_play_1, &*y_play_2);
-		 
-		 
-		/*
-		error("Mode not yet implemented");//временно
-		erase();//временно*/
-	refresh();//временно
-		//endwin();//временно
-}
-
-short prediction(short *boll, short *v, short position){
-	short vector_x = v[1];
-	short vector_y = v[0];
-	short after_x = boll[1];
-	short after_y = boll[0];
-	if(position == LEFT){
-		while(after_x >= 0){
-			after_x += vector_x;
-			if((after_y == RAZMER_Y) || (after_y == 0))
-				vector_y *= -1;
-			after_y += vector_y;
-		}
-		return after_y;
-	}
-	if(position == RIGHT){
-		while(after_x <= RAZMER_X){
-			after_x += vector_x;
-			if((after_y == RAZMER_Y) || (after_y == 0))
-				vector_y *= -1;
-			after_y += vector_y;
-		}
-		return after_y;
-	}
-	return -1;
-}
-
-short bot(short *boll, short *v, short position, short player_y){
-	short target_y;
-	short status_bot = 0;
-	if(position == LEFT){
-		if(boll[1] < RAZMER_X/2){
-			if((boll[1] == RAZMER_X/2-1) && (v[1] < 0)){
-				if(rand()%100 > WIN_RATE)
-					target_y = rand()%RAZMER_Y;
-				else target_y = prediction(boll, v, position);
-				status_bot = 1;
-			}
-			if(status_bot){
-				if(player_y > target_y)
-					return -1;
-				if(player_y < target_y)
-					return +1;
-				if(player_y == target_y){
-					status_bot = 0;
-					return 0;
-				}
-			}
-		}
-	}
-	if(position == RIGHT){
-		if(boll[1] > RAZMER_X/2){
-			if((boll[1] == RAZMER_X/2+1) && (v[1] > 0)){
-				if(rand()%100 > WIN_RATE)
-					target_y = rand()%RAZMER_Y;
-				else target_y = prediction(boll, v, position);
-				status_bot = 1;
-			}
-			if(status_bot){
-				if(player_y > target_y)
-					return -1;
-				if(player_y < target_y)
-					return +1;
-				if(player_y == target_y){
-					status_bot = 0;
-					return 0;
-				}
-			}
-		}
-	}
-	return 0;
-}
-
 void offline_play(short *boll, short *v, short *score, short y_play_1, short y_play_2){
 		//граница поля игры сверху или снизу
 		if (boll[0] == RAZMER_Y || boll[0] == 0)
@@ -247,7 +131,8 @@ void pong(short mod){
 			}
 			case 2:
 			{	
-				online_play(boll, score, &y_play_1, &y_play_2, y_play);
+				sender(y_play);
+				receiver(boll, score, &y_play_1, &y_play_2);
 				switch(wgetch(play_wnd)){
 					case KEY_UP:
 						y_play = 'd';
@@ -261,7 +146,6 @@ void pong(short mod){
 					default:
 						break;			
 				}
-				//return;//временно
 			}
 			case 3:
 			{

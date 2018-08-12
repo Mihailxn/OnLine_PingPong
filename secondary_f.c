@@ -3,8 +3,6 @@
 #include <unistd.h> 
 #include "pong.h"
 
-#define MAX_NAME_LEN 15
-
 /*
 void sig_winch(int signo){
     struct winsize size;
