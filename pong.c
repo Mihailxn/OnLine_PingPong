@@ -39,15 +39,15 @@ void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, ch
 		endwin();//временно
 }
 
-int prediction(short *boll, short *v, int player, int position){
-	int new_vector_x = v[1];
-	int new_vector_y = v[0];
-	int vector_x = v[1];
-	int vector_y = v[0];
-	int new_x = boll[1];
-	int new_y = boll[0];
-	int after_x = boll[1];
-	int after_y = boll[0];
+int prediction(short *boll, short *v, short player, int position){
+	short new_vector_x = v[1];
+	short new_vector_y = v[0];
+	short vector_x = v[1];
+	short vector_y = v[0];
+	short new_x = boll[1];
+	short new_y = boll[0];
+	short after_x = boll[1];
+	short after_y = boll[0];
 	if(position == LEFT){
 		if((new_x < RAZMER_X/2) && (new_vector_x < 0)){
 			while(after_x > 0){
@@ -215,6 +215,10 @@ void pong(short mod){
 			}
 			case 3:
 			{
+				//присвоить указателю функцию
+				if(++time%40==0){
+					offline_play(boll, v, score, y_play_1, y_play_2);
+				}
 				switch(wgetch(play_wnd)){
 					case KEY_UP:
 						y_play_1--;
