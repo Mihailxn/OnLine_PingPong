@@ -247,7 +247,7 @@ void pong(short mod){
 			}
 			case 2:
 			{	
-				online_play(boll, score, &y_play_1, &y_play_2, y_play);
+				y_play = 'g';
 				switch(wgetch(play_wnd)){
 					case KEY_UP:
 						y_play = 'd';
@@ -261,7 +261,8 @@ void pong(short mod){
 					default:
 						break;			
 				}
-				//return;//временно
+				sender(y_play);
+				receiver(boll, score, &y_play_1, &y_play_2);
 			}
 			case 3:
 			{

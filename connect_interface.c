@@ -75,21 +75,20 @@ void sender(char y_play){
 
 void receiver(short *boll, short *score, short *y_play_1, short *y_play_2){
 	int swaptmp;
-	if (recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr *)&serv_addr, &slen) > 0){
-			if (STC.number == 2){
-				gSTC.x_ball = 60 - gSTC.x_ball;
-				swaptmp = gSTC.y_player1;
-				gSTC.y_player1 = gSTC.y_player2;
-				gSTC.y_player2 = swaptmp;
-			}
-			boll[0] = gSTC.y_ball;
-			boll[1] = gSTC.x_ball;
-			*y_play_1 = gSTC.y_player2;
-			*y_play_2 = gSTC.y_player1;
-			if (gSTC.res == 'V')
-				score[0]++;
-			else if (gSTC.res == 'L')
-				score[1]++;
-			
+	if (recvfrom(sockfd, &gSTC, sizeof(gSTC), MSG_DONTWAIT, (struct sockaddr *)&serv_addr, &slen) > 0){
+		if (STC.number == 2){
+			gSTC.x_ball = 76 - gSTC.x_ball;
+			swaptmp = gSTC.y_player1;
+			gSTC.y_player1 = gSTC.y_player2;
+			gSTC.y_player2 = swaptmp;
 		}
+		boll[0] = gSTC.y_ball;
+		boll[1] = gSTC.x_ball;
+		*y_play_1 = gSTC.y_player2;
+		*y_play_2 = gSTC.y_player1;
+		if (gSTC.res == 'V')
+			score[0]++;
+		else if (gSTC.res == 'L')
+			score[1]++;
+	}
 }
