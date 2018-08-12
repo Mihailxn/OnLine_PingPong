@@ -27,6 +27,7 @@
  struct ClientToServerConnect
 {
     char nikname[15];//Имя Игорька
+    char escape;
 }/*CTSC*/;
  struct ServerToClientAccept
 {
@@ -138,6 +139,8 @@ void *listener_fn(void *arguments)
 				printf("recvfrom()");
 				exit(4);
 		}
+		if(CTSC.escape=='E')
+		continue;
 		port++;
 		pid_t pid;
 		switch(pid=fork())
