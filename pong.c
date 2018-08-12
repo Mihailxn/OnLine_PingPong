@@ -131,8 +131,8 @@ void pong(short mod){
 			}
 			case 2:
 			{	
-        y_play = 'g';
-        switch(wgetch(play_wnd)){
+				y_play = 'g';
+				switch(wgetch(play_wnd)){
 					case KEY_UP:
 						y_play = 'u';
 						break;
