@@ -15,7 +15,8 @@ $ make clean
 https://travis-ci.org/Mihailxn/OnLine_PingPong/builds
 ------------------------------------------------------------------------
 Страница проекта на redmine hosting:
-http://www.hostedredmine.com/projects/online_pingpong
+Проект: http://www.hostedredmine.com/projects/online_pingpong
+Родительская задача: http://www.hostedredmine.com/issues/768635
 ------------------------------------------------------------------------
 Описание приложения:
 Игра "On-line ping-pong" - классивеский вариант игры из 90х - "Pong",
