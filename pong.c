@@ -1,6 +1,9 @@
 #include <ncurses.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <string.h> 
+#include <sys/socket.h>
+#include <sys/types.h>
 #include "pong.h"
 
 #define RAZMER_Y 20//высота игровогшо поля
@@ -8,7 +11,6 @@
 #define MAX_NAME_LEN 15
 #define LEFT 1
 #define RIGHT 2
-
 void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, char y_play){
 		/*
 		 *Здесь нужно взять полученные от сервера значения:
@@ -35,10 +37,15 @@ void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, ch
 		 *	}	
 		 * 
 		 */
+	sender(y_play);
+	receiver(boll, score, &*y_play_1, &*y_play_2);
+		 
+		 
+		/*
 		error("Mode not yet implemented");//временно
-		erase();//временно
-		refresh();//временно
-		endwin();//временно
+		erase();//временно*/
+	refresh();//временно
+		//endwin();//временно
 }
 
 int prediction(short *boll, short *v, int player, int position){
@@ -223,7 +230,7 @@ void pong(short mod){
 					default:
 						break;			
 				}
-				return;//временно
+				//return;//временно
 			}
 			case 3:
 			{
