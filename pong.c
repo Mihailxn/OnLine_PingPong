@@ -1,13 +1,15 @@
 #include <ncurses.h>
 #include <unistd.h>
-#include <string.h> 
+#include <string.h>
+#include <stdlib.h> 
 #include "pong.h"
 
 #define RAZMER_Y 20//высота игровогшо поля
 #define RAZMER_X 76//ширина игрового поля
 #define MAX_NAME_LEN 15
-#define LEFT 1
-#define RIGHT 2
+#define LEFT 1//сторона бота
+#define RIGHT 2//сторона бота
+#define WIN_RATE 100//шанс что бот НЕ пропустит шарик 
 
 void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, char y_play){
 		/*
@@ -41,49 +43,122 @@ void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, ch
 		endwin();//временно
 }
 
-int prediction(short *boll, short *v, short player, short position){
-	short new_vector_x = v[1];
-	short new_vector_y = v[0];
+short prediction(short *boll, short *v, short position){
 	short vector_x = v[1];
 	short vector_y = v[0];
-	short new_x = boll[1];
-	short new_y = boll[0];
 	short after_x = boll[1];
 	short after_y = boll[0];
 	if(position == LEFT){
-		if((after_x < RAZMER_X/2) && (new_vector_x < 0)){
-			while(after_x > 0){
-				after_x += vector_x;
-				if((after_y == RAZMER_Y) || (after_y == 0))
-					vector_y *= -1;
-				after_y += vector_y;
+		while(after_x >= 0){
+			after_x += vector_x;
+			if((after_y == RAZMER_Y) || (after_y == 0))
+				vector_y *= -1;
+			after_y += vector_y;
+		}
+		return after_y;
+	}
+	if(position == RIGHT){
+		while(after_x <= RAZMER_X){
+			after_x += vector_x;
+			if((after_y == RAZMER_Y) || (after_y == 0))
+				vector_y *= -1;
+			after_y += vector_y;
+		}
+		return after_y;
+	}
+	return -1;
+}
+
+short bot(short *boll, short *v, short position, short player_y){
+	short target_y;
+	int chance;
+	short status_bot = 0;
+	if(position == LEFT){
+		if(boll[1] < RAZMER_X/2){
+			if((boll[1] == RAZMER_X/2-1) && (v[1] < 0)){
+				if(rand()%100 > WIN_RATE)
+					target_y = rand()%RAZMER_Y;
+				else target_y = prediction(boll, v, position);
+				status_bot = 1;
 			}
-			if(player > after_y)
-				return -1;
-			if(player < after_y)
-				return +1;
-			if(player == after_y)
-				return 0;
+			if(status_bot){
+				if(player_y > target_y)
+					return -1;
+				if(player_y < target_y)
+					return +1;
+				if(player_y == target_y){
+					status_bot = 0;
+					return 0;
+				}
+			}
 		}
 	}
 	if(position == RIGHT){
-		if((after_x > RAZMER_X/2) && (new_vector_x > 0)){
-			while(after_x < (RAZMER_X)){
-				after_x += vector_x;
-				if((after_y == RAZMER_Y) || (after_y == 0))
-					vector_y *= -1;
-				after_y += vector_y;
+		if(boll[1] > RAZMER_X/2){
+			if((boll[1] == RAZMER_X/2+1) && (v[1] > 0)){
+				if(rand()%100 > WIN_RATE)
+					target_y = rand()%RAZMER_Y;
+				else target_y = prediction(boll, v, position);
+				status_bot = 1;
 			}
-			if(player > after_y)
-				return -1;
-			if(player < after_y)
-				return +1;
-			if(player == after_y)
-				return 0;
+			if(status_bot){
+				if(player_y > target_y)
+					return -1;
+				if(player_y < target_y)
+					return +1;
+				if(player_y == target_y){
+					status_bot = 0;
+					return 0;
+				}
+			}
 		}
 	}
 	return 0;
 }
+
+//int prediction(short *boll, short *v, short player, short position){
+//	short new_vector_x = v[1];
+//	short new_vector_y = v[0];
+//	short vector_x = v[1];
+//	short vector_y = v[0];
+//	short new_x = boll[1];
+//	short new_y = boll[0];
+//	short after_x = boll[1];
+//	short after_y = boll[0];
+//	if(position == LEFT){
+//		if((after_x < RAZMER_X/2) && (new_vector_x < 0)){
+//			while(after_x > 0){
+//				after_x += vector_x;
+//				if((after_y == RAZMER_Y) || (after_y == 0))
+//					vector_y *= -1;
+//				after_y += vector_y;
+//			}
+//			if(player > after_y)
+//				return -1;
+//			if(player < after_y)
+//				return +1;
+//			if(player == after_y)
+//				return 0;
+//		}
+//	}
+//	if(position == RIGHT){
+//		if((after_x > RAZMER_X/2) && (new_vector_x > 0)){
+//			while(after_x < (RAZMER_X)){
+//				after_x += vector_x;
+//				if((after_y == RAZMER_Y) || (after_y == 0))
+//					vector_y *= -1;
+//				after_y += vector_y;
+//			}
+//			if(player > after_y)
+//				return -1;
+//			if(player < after_y)
+//				return +1;
+//			if(player == after_y)
+//				return 0;
+//		}
+//	}
+//	return 0;
+//}
 
 void offline_play(short *boll, short *v, short *score, short y_play_1, short y_play_2){
 		//граница поля игры сверху или снизу
@@ -227,8 +302,6 @@ void pong(short mod){
 			}
 			case 3:
 			{
-				int chance = rand() % 5 - 2;
-				//присвоить указателю функцию
 				if(++time%40==0){
 					offline_play(boll, v, score, y_play_1, y_play_2);
 				}
@@ -252,8 +325,8 @@ void pong(short mod){
 					default:
 						break;
 				}
-				y_play_2 += prediction(boll, v, y_play_2, LEFT);
-				y_play_1 += prediction(boll, v, y_play_1, RIGHT);
+				y_play_2 += bot(boll, v, LEFT, y_play_2);
+				y_play_1 += bot(boll, v, RIGHT, y_play_1);
 			}
 		}
 		if (esc<0) break;
