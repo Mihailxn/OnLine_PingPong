@@ -9,7 +9,7 @@
 #define MAX_NAME_LEN 15
 #define LEFT 1//сторона бота
 #define RIGHT 2//сторона бота
-#define WIN_RATE 100//шанс что бот НЕ пропустит шарик 
+#define WIN_RATE 70//шанс что бот НЕ пропустит шарик 
 
 void online_play(short *boll, short *score, short *y_play_1, short *y_play_2, char y_play){
 		/*
