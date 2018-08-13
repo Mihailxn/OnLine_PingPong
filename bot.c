@@ -6,11 +6,17 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <time.h>
 
 #define RAZMER_Y 20//высота игровогшо поля
-#define RAZMER_X 74//ширина игрового поля
+#define RAZMER_X 76//ширина игрового поля
 
-#define MAX_STEP 18//шаги для закрытия поля
+#define WIN_RATE 70
+
+#define WAIT 0
+#define SCAN 1
+#define RANDOM 2
+#define MOVEING 3
 
 struct ServerToClient{
 	char nick[15];
@@ -39,7 +45,7 @@ int main(int argc, char const *argv[]){
 	struct ClientToServer CTS;
 	struct gameClientToServer gCTS;
 	struct gameServerToClient gSTC;
-	int sockfd = 0, slen = sizeof(serv_addr), portnum = 15302, goals = 0;
+	int sockfd = 0, slen = sizeof(serv_addr), portnum = 30022, goals = 0;
 	pid_t pid;
 	
 	bzero((char *) &CTS, sizeof(CTS));
@@ -55,8 +61,8 @@ int main(int argc, char const *argv[]){
     
     if(argc == 3){
         serv_addr.sin_family = AF_INET;
-        serv_addr.sin_port = htons(atoi(argv[3]));
-        inet_aton(argv[2], &serv_addr.sin_addr);
+        serv_addr.sin_port = htons(atoi(argv[2]));
+        inet_aton(argv[1], &serv_addr.sin_addr);
     }else{
     	serv_addr.sin_family = AF_INET;
 	    serv_addr.sin_port = htons(portnum);
@@ -69,48 +75,83 @@ int main(int argc, char const *argv[]){
 	
 	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
 	
-    int before_x, before_y, new_x = 0, new_y = 0 , after_x = 0, after_y = 0, bot_y;
-    while(1){
-        gCTS.move = 0;
-        sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
-        
-        recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr*)&serv_addr, &slen);
-        before_x = new_x;
-        before_y = new_y;
-        new_x = gSTC.x_ball;
-        new_y = gSTC.y_ball;
-        bot_y = gSTC.y_player2;
+    srand(time(NULL));
 
-        //шарик приблежается к боту, шарик на его стороне поля, блокировка на повтор 
-        if((before_x < new_x) && (new_x > RAZMER_X / 2) && (bot_y != after_y)){
-            //напровление шарика по оси "y"
-            int vector_y;
+    short before_x, before_y;
+    short new_x = 0, new_y = 0;
+    short after_x = 0, after_y = 0;
+    short vector_x, vector_y;
+    short status = WAIT, bot_y = 10, time = 0;
+    while(1){
+        if(status == WAIT){
+            printf("%d\n",status);
+            recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr*)&serv_addr, &slen);
+            before_x = gSTC.x_ball;
+            before_y = gSTC.y_ball;
+
+            do{
+                recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr*)&serv_addr, &slen);
+                new_x = gSTC.x_ball;
+                new_y = gSTC.y_ball;
+            }while(before_x == new_x);
+
+            if(before_x != new_x)
+                status = SCAN;
+        }
+        
+        if(status == SCAN){
+            printf("%d\n",status);
+            if(before_x > new_x)
+                vector_x = -1;
+            else vector_x = +1;
+
+            if(before_y > new_y)
+                vector_y = -1;
             if(before_y < new_y)
                 vector_y = +1;
-            else vector_y = -1;
+            if(before_y == new_y)
+                vector_y == 0;
 
-            //ищем точку контакта шарика с ракеткой
-            after_x = new_x;
-            after_y = new_y;
-            while(after_x < RAZMER_X){
-                after_x += 1;
-                after_y +=vector_y;
-                if((after_y == RAZMER_Y) || (after_y == 0))
-                    vector_y *= -1;
+            if((vector_x > 0) && (new_x > RAZMER_X/2)){
+                after_x = new_x;
+                after_y = new_y;
+                while(after_x < RAZMER_X-1){//настройка под логику сервера
+                    after_x += vector_x;
+                    after_y += vector_y;
+                    if((after_y >= RAZMER_Y-1) || (after_y <= 1))//настройка под логику сервера
+                        vector_y *= -1;
+                }
+                status = RANDOM;
+            }else status = WAIT;
+        }
+
+        if(status == RANDOM){
+            if(rand()%100 > WIN_RATE){
+                after_y = rand()%(RAZMER_Y+1);
             }
-            //двигаем ракетку
-            while(after_y != bot_y){
-                if(after_y < bot_y){
-                    gCTS.move = 2;
-                    sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
-                    //придумать что то с задержками (чтоб ракетка не летала, а плавно передвигалась) тут или на сервере.
-                }else{
-                    gCTS.move = 1;
+            status = MOVEING;
+        }
+
+        if(status == MOVEING){
+            recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr*)&serv_addr, &slen);
+            bot_y = gSTC.y_player2;
+            new_x = gSTC.x_ball;
+            printf("%d\n",status);
+            printf("%d - %d\n", after_y, bot_y);
+            
+            if((after_y == bot_y) && (new_x < RAZMER_X/2))
+                status = WAIT; 
+            
+            if(!(++time%40)){//таймер для замедление движения ракетки
+                if(after_y > bot_y){
+                    gCTS.move = 'D';
                     sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
                 }
-                recvfrom(sockfd, &gSTC, sizeof(gSTC), 0, (struct sockaddr*)&serv_addr, &slen);
-                bot_y = gSTC.y_player2;
-                usleep(300);   
+
+                if(after_y < bot_y){
+                    gCTS.move = 'U';
+                    sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
+                }   
             }
         }
     }
