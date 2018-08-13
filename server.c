@@ -58,11 +58,15 @@ struct ListenerArguments
     int *listener_1;
     int client_address_size;
     struct sockaddr_in *client;
+    char endgame;
 };
 
 //Функция слушателя игроков, принимает от них сообщения
 void *listener_fn(void *arguments)
 {
+    int count_play_1=0;
+    int count_play_2=0;
+    arg->endgame='0';
     struct ListenerArguments *arg=(struct ListenerArguments *)arguments;
     struct ClientToServerGame CTSG;
     bzero((char* )&CTSG, sizeof(CTSG));
@@ -70,30 +74,43 @@ void *listener_fn(void *arguments)
     while(1)
     {
 	//Без мьютексов так как изменяет данные только один данный поток, а чтением можно принебречь
-	if(status = recv(*arg->listener_1, &CTSG, sizeof(CTSG), 0) <0)
-
+	if(status = recv(*arg->listener_1, &CTSG, sizeof(CTSG), MSG_DONTWAIT) <0)
 	{
-		printf("recvfrom()");
-		exit(4);
+		//printf("recvfrom()");
+		//exit(4);
+		count_play_1++;
+		count_play_2++;
+		usleep(1000);
+		if(count_play_1>3)
+		    arg->endgame='1';
+		if(count_play_2>3)
+		    arg->endgame='2';
 	} 
 	else 
 	{
 		if (CTSG.act == 'U')
 		{
 		    if(CTSG.number==1)
-			arg->move_1 -= 1;
+			{arg->move_1 -= 1; count_play_1=0;}
 		    else
-			arg->move_2 -= 1;
+			{arg->move_2 -= 1;count_play_2=0;}
 			printf("Got U\n");
 		} 
 		if (CTSG.act == 'D')
 		{
 		    if(CTSG.number==1)
-			arg->move_1 += 1;
+			{arg->move_1 += 1;count_play_1=0;}
 		    else
-			arg->move_2 += 1;
+			{arg->move_2 += 1;count_play_2=0;}
 			printf ("GOt D\n");
 		}
+		if(CTSG.act=='G')
+		    {
+			if(CTSG.number==1)
+			{count_play_1=0;}
+			else
+			{count_play_2=0;}
+		    }
 	}
     }
 }
@@ -119,8 +136,8 @@ void *listener_fn(void *arguments)
 	if(bind(listener_2, (struct sockaddr *)&addres, sizeof(addres)) < 0)
 
 	{
-    	    perror("bind");
-    	    exit(2);
+		perror("bind");
+		exit(2);
 	}
 	
 	
@@ -129,19 +146,21 @@ void *listener_fn(void *arguments)
 		client_address_size_1 = sizeof(client_1);
 		if(recvfrom(listener_2, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
 		{
-				printf("recvfrom()");
-				exit(4);
+			printf("recvfrom()");
+			exit(4);
 		}
 		strncpy(STCA.nikname,CTSC.nikname,sizeof(STCA.nikname));
 		
 		client_address_size_2 = sizeof(client_2);
 		if(recvfrom(listener_2, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_2,&client_address_size_2) <0)
 		{
-				printf("recvfrom()");
-				exit(4);
+			printf("recvfrom()");
+			exit(4);
 		}
-		if(CTSC.escape=='E')
-		continue;
+		if(CTSC.escape=='E'){
+			puts("GOT DISCONNECT msg");
+			continue;
+		}
 		port++;
 		pid_t pid;
 		switch(pid=fork())
@@ -153,8 +172,8 @@ void *listener_fn(void *arguments)
 				listener_1 = socket(AF_INET, SOCK_DGRAM, 0);
 				if(listener_1 < 0)
 				{
-						perror("socket");
-						exit(1);
+					perror("socket");
+					exit(1);
 				}	
 				struct sockaddr_in addr;
 				//Биндим новый сокет, чтобы на старый ничего не шло и было возможно подключение новых клиентов.
@@ -263,11 +282,20 @@ void *listener_fn(void *arguments)
 						    STCG.y_ball=y_ball;
 						    STCG.y_play_1=y_play_1;
 						    STCG.y_play_2=y_play_2;
+						    if(LA1.endgame=='2')
+							{
+							    STCG.status='C';
+							}
 						    if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_1, sizeof(client_1)) < 0)
 						    {
 							printf("sendto()");
 							exit(2);
 						    }
+						    STCG.status='G';
+						    if(LA1.endgame=='1')
+							{
+							    STCG.status='C';
+							}
 						    if (sendto(listener_1, &STCG, sizeof(STCG), 0,(struct sockaddr *)&client_2, sizeof(client_2)) < 0)
 						    {
 							printf("sendto()");
