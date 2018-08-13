@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include "pong.h"
 
-#define WIN_RATE 70 
+#define WIN_RATE 90
+#define SHIFT 4
 
 #define SCAN 0
 #define RANDOM 1
@@ -11,24 +12,24 @@ short prediction(short *boll, short *v, short position){
 	short vector_x = v[1];
 	short vector_y = v[0];
 	short after_x = boll[1];
-	short after_y = boll[0];
+	short target_y = boll[0];
 	if(position == LEFT){
 		while(after_x >= 0){
 			after_x += vector_x;
-			if((after_y == RAZMER_Y) || (after_y == 0))
+			if((target_y == RAZMER_Y) || (target_y == 0))
 				vector_y *= -1;
-			after_y += vector_y;
+			target_y += vector_y;
 		}
-		return after_y;
+		return target_y;
 	}
 	if(position == RIGHT){
-		while(after_x <= RAZMER_X){
+		while(after_x <= RAZMER_X-1){
 			after_x += vector_x;
-			if((after_y == RAZMER_Y) || (after_y == 0))
+			if((target_y == RAZMER_Y) || (target_y == 0))
 				vector_y *= -1;
-			after_y += vector_y;
+			target_y += vector_y;
 		}
-		return after_y;
+		return target_y;
 	}
 	return -1;
 }
@@ -54,8 +55,16 @@ short bot(short *boll, short *v, short position, short player_y){
 
 	if(status == RANDOM){
 		if(rand()%100 > WIN_RATE){
-			target_y = rand()%(RAZMER_Y+1);
-		}
+            if(rand()%2){
+                if((target_y+SHIFT) > RAZMER_Y){
+                    target_y-=SHIFT*2;
+                }else target_y+=SHIFT;
+            }else{
+                if((target_y-SHIFT) < 0){
+                    target_y+=SHIFT*2;
+                }else target_y-=SHIFT;
+            }
+        }
 		status = MOVEING;
 	}
 	if(!(++time_bot%40)){

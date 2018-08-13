@@ -11,7 +11,8 @@
 #define RAZMER_Y 20//высота игровогшо поля
 #define RAZMER_X 76//ширина игрового поля
 
-#define WIN_RATE 70
+#define WIN_RATE 90
+#define SHIFT 4
 
 #define WAIT 0
 #define SCAN 1
@@ -95,7 +96,7 @@ int main(int argc, char const *argv[]){
                 new_y = gSTC.y_ball;
             }while(before_x == new_x);
 
-            if(before_x != new_x)
+            if((before_x != new_x) && (before_x > RAZMER_X/2+1) && (new_x > RAZMER_X/2+2))
                 status = SCAN;
         }
         
@@ -110,7 +111,7 @@ int main(int argc, char const *argv[]){
             if(before_y < new_y)
                 vector_y = +1;
             if(before_y == new_y)
-                vector_y == 0;
+                vector_y = 0;
 
             if((vector_x > 0) && (new_x > RAZMER_X/2)){
                 after_x = new_x;
@@ -118,7 +119,7 @@ int main(int argc, char const *argv[]){
                 while(after_x < RAZMER_X-1){//настройка под логику сервера
                     after_x += vector_x;
                     after_y += vector_y;
-                    if((after_y >= RAZMER_Y-1) || (after_y <= 1))//настройка под логику сервера
+                    if((after_y >= RAZMER_Y) || (after_y <= 0))//настройка под логику сервера
                         vector_y *= -1;
                 }
                 status = RANDOM;
@@ -127,7 +128,15 @@ int main(int argc, char const *argv[]){
 
         if(status == RANDOM){
             if(rand()%100 > WIN_RATE){
-                after_y = rand()%(RAZMER_Y+1);
+                if(rand()%2){
+                    if((after_y+SHIFT) > RAZMER_Y){
+                        after_y-=SHIFT*2;
+                    }else after_y+=SHIFT;
+                }else{
+                    if((after_y-SHIFT) < 0){
+                        after_y+=SHIFT*2;
+                    }else after_y-=SHIFT;
+                }
             }
             status = MOVEING;
         }
@@ -154,6 +163,8 @@ int main(int argc, char const *argv[]){
                 }   
             }
         }
+        gCTS.move = 'G';
+        sendto(sockfd, &gCTS, sizeof(gCTS), 0, (struct sockaddr *)&serv_addr, slen);
     }
 	return 0;
 }
