@@ -98,8 +98,8 @@ void receiver(short *boll, short *score, short *y_play_1, short *y_play_2){
 			gSTC.y_player2 = swaptmp;
 		}
 		boll[0] = gSTC.y_ball;
-		if (boll[0] == RAZMER_Y || boll[0] == 0) fbeep(660, 10); 
 		boll[1] = gSTC.x_ball;
+		if (boll[0] == RAZMER_Y || boll[0] == 0) fbeep(660, 10); 
 		if (boll[1] == RAZMER_X || boll[1] == 0) fbeep(550, 20);
 		*y_play_1 = gSTC.y_player2;
 		*y_play_2 = gSTC.y_player1;
