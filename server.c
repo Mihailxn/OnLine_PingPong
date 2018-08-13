@@ -119,8 +119,8 @@ void *listener_fn(void *arguments)
 	if(bind(listener_2, (struct sockaddr *)&addres, sizeof(addres)) < 0)
 
 	{
-    	    perror("bind");
-    	    exit(2);
+		perror("bind");
+		exit(2);
 	}
 	
 	
@@ -129,19 +129,21 @@ void *listener_fn(void *arguments)
 		client_address_size_1 = sizeof(client_1);
 		if(recvfrom(listener_2, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_1,&client_address_size_1) <0)
 		{
-				printf("recvfrom()");
-				exit(4);
+			printf("recvfrom()");
+			exit(4);
 		}
 		strncpy(STCA.nikname,CTSC.nikname,sizeof(STCA.nikname));
 		
 		client_address_size_2 = sizeof(client_2);
 		if(recvfrom(listener_2, &CTSC, sizeof(CTSC)+1, 0, (struct sockaddr *) &client_2,&client_address_size_2) <0)
 		{
-				printf("recvfrom()");
-				exit(4);
+			printf("recvfrom()");
+			exit(4);
 		}
-		if(CTSC.escape=='E')
-		continue;
+		if(CTSC.escape=='E'){
+			puts("GOT DISCONNECT msg");
+			continue;
+		}
 		port++;
 		pid_t pid;
 		switch(pid=fork())
@@ -153,8 +155,8 @@ void *listener_fn(void *arguments)
 				listener_1 = socket(AF_INET, SOCK_DGRAM, 0);
 				if(listener_1 < 0)
 				{
-						perror("socket");
-						exit(1);
+					perror("socket");
+					exit(1);
 				}	
 				struct sockaddr_in addr;
 				//Биндим новый сокет, чтобы на старый ничего не шло и было возможно подключение новых клиентов.
@@ -294,12 +296,12 @@ void *listener_fn(void *arguments)
 					}
 					
 					//Мяч ударился о потолок
-					if(y_ball==1)
+					if(y_ball==0)
 					{
 						vct.y=-vct.y;
 					}
 					//Мяч ударился о пол
-					if(y_ball==Y_FIELD-1)
+					if(y_ball==Y_FIELD)
 					{
 						vct.y=-vct.y;
 					}
@@ -313,25 +315,25 @@ void *listener_fn(void *arguments)
 					if(x_ball==X_FIELD-1&&(y_ball>(y_play_2+MID_RACKET/2)&&y_ball<=(y_play_2+MID_RACKET/2+SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y--;
+						vct.y++;
 					}
 					//Мяч ударился о нижний бок ракетки игрока справа
 					if(x_ball==X_FIELD-1&&(y_ball<(y_play_2-MID_RACKET/2)&&y_ball>=(y_play_2-MID_RACKET/2-SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y++;
+						vct.y--;
 					}
 					//Мяч ударился о верхний край ракетки игрока справа
 					if(x_ball==X_FIELD-1&&(y_ball>(y_play_2+MID_RACKET/2+SIDE_RACKET)&&y_ball<=(y_play_2+MID_RACKET/2+SIDE_RACKET+END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y-2;
+						vct.y=vct.y+2;
 					}
 					//Мяч ударился о нижний край ракетки игрока справа
 					if(x_ball==X_FIELD-1&&(y_ball<(y_play_2-MID_RACKET/2-END_RACKET)&&y_ball>=(y_play_2-MID_RACKET/2-SIDE_RACKET-END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y+2;
+						vct.y=vct.y-2;
 					}
 					
 					//Мяч ударился о центр ракетки игрока слева
@@ -343,25 +345,25 @@ void *listener_fn(void *arguments)
 					if(x_ball==1&&(y_ball>(y_play_1+MID_RACKET/2)&&y_ball<=(y_play_1+MID_RACKET/2+SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y--;
+						vct.y++;
 					}
 					//Мяч ударился о нижний бок ракетки игрока слева
 					if(x_ball==1&&(y_ball<(y_play_1-MID_RACKET/2)&&y_ball>=(y_play_1-MID_RACKET/2-SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y++;
+						vct.y--;
 					}
 					//Мяч ударился о верхний край ракетки игрока слева
 					if(x_ball==1&&(y_ball>(y_play_1+MID_RACKET/2+SIDE_RACKET)&&y_ball<=(y_play_1+MID_RACKET/2+SIDE_RACKET+END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y-2;
+						vct.y=vct.y+2;
 					}
 					//Мяч ударился о нижний край ракетки игрока слева
 					if(x_ball==1&&(y_ball<(y_play_1-MID_RACKET/2-END_RACKET)&&y_ball>=(y_play_1-MID_RACKET/2-SIDE_RACKET-END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y+2;
+						vct.y=vct.y-2;
 					}
 					//Меняем позицию мячика
 					x_ball+=vct.x;

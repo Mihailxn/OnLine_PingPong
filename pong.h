@@ -4,6 +4,9 @@
 #define RAZMER_X 76//ширина игрового поля
 #define LEFT 1//сторона бота
 #define RIGHT 2//сторона бота
+#define SCORE_END 15//до какого счёта игра
+#define WIN 1//победа
+#define LOOS 2//проигрыш
 
 //pong.c
 void offline_play(short *, short *, short *, short , short );
@@ -21,9 +24,11 @@ void info(short);
 void enter_nikname(char *);
 void loading(char *);
 int getCountsOfDigits(int);
+void result_game(short);
+void result_multi_offline_game(char*);
 
 //connect_interface.c
-void teke_connect(char *, char *);
+int teke_connect(char *, char *);
 void sender(char);
 void receiver(short *, short *, short *, short *);
 

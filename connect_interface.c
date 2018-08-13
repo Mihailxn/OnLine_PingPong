@@ -2,18 +2,27 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include "pong.h"
 
 struct sockaddr_in serv_addr;
 int sockfd, slen = sizeof(serv_addr), goals;
 
-void teke_connect(char *nikname_1, char *nikname_2){
-	
+void* hearthis(void* ptr){
+	int *esc = ptr;
+	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
+	*esc = 1;
+}
+
+int teke_connect(char *nikname_1, char *nikname_2){
+	pthread_t hearth;
 	char str[] = "Expection of an opponent";
-	int portnum = 30022;
+	int portnum = 30022, esc = 0, stat;
+	void *status;
 	
 	bzero((char *) &CTS, sizeof(CTS));
 	bzero((char *) &STC, sizeof(STC));
@@ -33,24 +42,32 @@ void teke_connect(char *nikname_1, char *nikname_2){
 	strncpy(CTS.nick, nikname_1, sizeof(CTS.nick));
 	CTS.here = 'H';
 	sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
-
-	/*
-	if (getch()==10){
+	pthread_create(&hearth, NULL, hearthis, &esc);
+	
+	
+	while (esc == 0){
+		if (getch()==0x1B){
+			esc = 2;
+			pthread_cancel(hearth);
+		}
+	}
+	pthread_join(hearth, &status);
+	
+	if (esc == 1){
+		gCTS.number = STC.number;
+		strncpy(nikname_2, STC.nick, sizeof(STC.nick));
+	}
+	else if( esc == 2 ){
 		CTS.here = 'E';
 		sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
 		erase();
 		refresh();
-		return();
+		return 1;
 	}
-	*/
-	
-	recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
-	
-	gCTS.number = STC.number;
-	strncpy(nikname_2, STC.nick, sizeof(STC.nick));
 	
 	erase();
-	refresh();	
+	refresh();
+	return 0;
 }
 
 

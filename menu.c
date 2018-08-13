@@ -13,8 +13,11 @@ short menu(short highlight){
 	
 	//задаём цветовые пары
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
-		
-     //для использования кнопочек
+    init_pair(0, COLOR_WHITE, COLOR_BLACK);
+	
+	erase();
+	wbkgd(stdscr, COLOR_PAIR(0));
+    //для использования кнопочек
 	keypad(stdscr,true);
 	noecho();
 	attron(COLOR_PAIR(1) | A_BOLD);

@@ -126,8 +126,8 @@ void info(short mod){
 	//задаём цветовые пары
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
     init_pair(2, COLOR_BLUE, COLOR_BLACK);
-		
-    noecho();
+	
+	noecho();
 	attron(COLOR_PAIR(2));
 	mvprintw(3,2,
 				"\tIIIII NN   NN FFFFFFF  OOOOO  \n" 
@@ -151,6 +151,7 @@ void info(short mod){
 			printw("\tDOWN:");
 			attron(COLOR_PAIR(1) | A_BOLD);
 			printw("\tKEY_DOWN\n\n");
+			attroff(COLOR_PAIR(1) | A_BOLD);
 			break;
 		case 2:	
 			printw("\tPAUSE:");
@@ -188,12 +189,71 @@ void info(short mod){
 			endwin();
 			return;
 	}
+	printw("\n\tScore %d points to win!", SCORE_END);
 	printw("\n\n\tPress any key to continium...");
 	box(stdscr, 0, 0);
 	getch();
 	erase();
     refresh();
     endwin();
+}
+
+void result_game(short mod){
+	int yMax, xMax;
+    getmaxyx(stdscr, yMax, xMax);
+	init_pair(6, COLOR_GREEN, COLOR_BLACK);
+    init_pair(7, COLOR_RED, COLOR_BLACK);
+    switch(mod){
+		case 1:
+			wbkgd(stdscr, COLOR_PAIR(6) | A_BOLD);
+			mvprintw(yMax/3,0,
+				"\tYY   YY  OOOOO  UU   UU    WW      WW IIIII NN   NN\n" 
+				"\tYY   YY OO   OO UU   UU    WW      WW  III  NNN  NN\n" 
+				"\t YYYYY  OO   OO UU   UU    WW   W  WW  III  NN N NN\n" 
+				"\t  YYY   OO   OO UU   UU     WW WWW WW  III  NN  NNN\n" 
+				"\t  YYY    OOOO0   UUUUU       WW   WW  IIIII NN   NN\n");  
+			break;
+		case 2:
+			wbkgd(stdscr, COLOR_PAIR(7) | A_BOLD);
+			mvprintw(yMax/3,0,
+				"\tYY   YY  OOOOO  UU   UU    LL       OOOOO   SSSSS   SSSSS \n" 
+				"\tYY   YY OO   OO UU   UU    LL      OO   OO SS      SS     \n" 
+				"\t YYYYY  OO   OO UU   UU    LL      OO   OO  SSSSS   SSSSS \n" 
+				"\t  YYY   OO   OO UU   UU    LL      OO   OO      SS      SS\n" 
+				"\t  YYY    OOOO0   UUUUU     LLLLLLL  OOOO0   SSSSS   SSSSS \n");  
+			break;
+		default:
+			error("result mode error");
+			break;
+    }
+	mvprintw(yMax/3+7,(xMax-28)/2,"Press any key to continium...");
+	attron(COLOR_PAIR(4));
+	box(stdscr, 0, 0);
+	attroff(COLOR_PAIR(4) | A_BOLD);
+	getch();
+	erase();
+    refresh();
+}
+
+void result_multi_offline_game(char* nikname){
+	int yMax, xMax;
+    getmaxyx(stdscr, yMax, xMax);
+	init_pair(6, COLOR_GREEN, COLOR_BLACK);
+    wbkgd(stdscr, COLOR_PAIR(6) | A_BOLD);
+	mvprintw(yMax/3-2, 25, nikname);
+	mvprintw(yMax/3,0,
+			"\t\tWW      WW IIIII NN   NN\n" 
+			"\t\tWW      WW  III  NNN  NN\n" 
+			"\t\tWW   W  WW  III  NN N NN\n" 
+			"\t\t WW WWW WW  III  NN  NNN\n" 
+			"\t\t  WW   WW  IIIII NN   NN\n");  
+    mvprintw(yMax/3+7,(xMax-28)/2,"Press any key to continium...");
+	attron(COLOR_PAIR(4));
+	box(stdscr, 0, 0);
+	attroff(COLOR_PAIR(4) | A_BOLD);
+	getch();
+	erase();
+    refresh();
 }
 
 int getCountsOfDigits(int number) {
