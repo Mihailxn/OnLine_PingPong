@@ -18,6 +18,7 @@
 #define SIDE_RACKET 1//Размер боковой части ракетки
 #define END_RACKET 1//Размер крайней части ракетки
 #define GAME_SPEED 200000//За сколько наносекунд произойдёт такт
+#define BOLL_SPEED 24//чем число меньше, тем быстрее мяч, скорость ракеток не изменяется
 
  struct Vector//Структура движения шарика в следующий такт времени
 {
@@ -252,7 +253,7 @@ void *listener_fn(void *arguments)
 								exit(2);
 						}
 						
-						for(i=0;i<39;i++)
+						for(i=0;i<BOLL_SPEED;i++)
 						{
 						    y_play_1=LA1.move_1;
 						    y_play_2=LA1.move_2;
@@ -274,13 +275,11 @@ void *listener_fn(void *arguments)
 						    }
 						    usleep(GAME_SPEED/40);
 						}
-					//вынести в функцию но мне пока лень________________
 					//Если мяч улетел за правого игрока
 					if(x_ball>=X_FIELD)
 					{
 						x_ball=X_FIELD/2;
 						y_ball=Y_FIELD/2;
-						//while(vct.x=rand()%3-1==0);
 						vct.x=-1;
 							vct.y=rand()%3-1;
 					}
@@ -295,12 +294,12 @@ void *listener_fn(void *arguments)
 					}
 					
 					//Мяч ударился о потолок
-					if(y_ball==1)
+					if(y_ball==0)
 					{
 						vct.y=-vct.y;
 					}
 					//Мяч ударился о пол
-					if(y_ball==Y_FIELD-1)
+					if(y_ball==Y_FIELD)
 					{
 						vct.y=-vct.y;
 					}
@@ -314,25 +313,25 @@ void *listener_fn(void *arguments)
 					if(x_ball==X_FIELD-1&&(y_ball>(y_play_2+MID_RACKET/2)&&y_ball<=(y_play_2+MID_RACKET/2+SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y--;
+						vct.y++;
 					}
 					//Мяч ударился о нижний бок ракетки игрока справа
 					if(x_ball==X_FIELD-1&&(y_ball<(y_play_2-MID_RACKET/2)&&y_ball>=(y_play_2-MID_RACKET/2-SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y++;
+						vct.y--;
 					}
 					//Мяч ударился о верхний край ракетки игрока справа
 					if(x_ball==X_FIELD-1&&(y_ball>(y_play_2+MID_RACKET/2+SIDE_RACKET)&&y_ball<=(y_play_2+MID_RACKET/2+SIDE_RACKET+END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y-2;
+						vct.y=vct.y+2;
 					}
 					//Мяч ударился о нижний край ракетки игрока справа
 					if(x_ball==X_FIELD-1&&(y_ball<(y_play_2-MID_RACKET/2-END_RACKET)&&y_ball>=(y_play_2-MID_RACKET/2-SIDE_RACKET-END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y+2;
+						vct.y=vct.y-2;
 					}
 					
 					//Мяч ударился о центр ракетки игрока слева
@@ -344,25 +343,25 @@ void *listener_fn(void *arguments)
 					if(x_ball==1&&(y_ball>(y_play_1+MID_RACKET/2)&&y_ball<=(y_play_1+MID_RACKET/2+SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y--;
+						vct.y++;
 					}
 					//Мяч ударился о нижний бок ракетки игрока слева
 					if(x_ball==1&&(y_ball<(y_play_1-MID_RACKET/2)&&y_ball>=(y_play_1-MID_RACKET/2-SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y++;
+						vct.y--;
 					}
 					//Мяч ударился о верхний край ракетки игрока слева
 					if(x_ball==1&&(y_ball>(y_play_1+MID_RACKET/2+SIDE_RACKET)&&y_ball<=(y_play_1+MID_RACKET/2+SIDE_RACKET+END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y-2;
+						vct.y=vct.y+2;
 					}
 					//Мяч ударился о нижний край ракетки игрока слева
 					if(x_ball==1&&(y_ball<(y_play_1-MID_RACKET/2-END_RACKET)&&y_ball>=(y_play_1-MID_RACKET/2-SIDE_RACKET-END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y+2;
+						vct.y=vct.y-2;
 					}
 					//Меняем позицию мячика
 					x_ball+=vct.x;
