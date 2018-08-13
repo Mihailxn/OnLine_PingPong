@@ -4,37 +4,34 @@
 #include <unistd.h> 
 #include "pong.h"
 
-/*
-void sig_winch(int signo){
-    struct winsize size;
-    ioctl(fileno(stdout), TIOCGWINSZ, (char *) &size);
-    resizeterm(size.ws_row, size.ws_col);
-}*/
-
 void offline_play(short *boll, short *v, short *score, short y_play_1, short y_play_2){
-		//граница поля игры сверху или снизу
-		if (boll[0] == RAZMER_Y || boll[0] == 0)
-			v[0]*=-1;
-		//граница справа
-		if (boll[1] == RAZMER_X){
-			if (y_play_1-boll[0]>1 || y_play_1-boll[0]<-1){
-				score[0]++;
-				boll[0] = RAZMER_Y/2;
-				boll[1] = RAZMER_X/2; 
-			}
-			v[1]*=-1;
-		} else
-		//граница слева
-		if(boll[1] == 0){
-			if (y_play_2-boll[0]>1 || y_play_2-boll[0]<-1){
-				score[1]++;
-				boll[0] = RAZMER_Y/2;
-				boll[1] = RAZMER_X/2;
-			}
-			v[1]*=-1; 
+	//граница поля игры сверху или снизу
+	if (boll[0] == RAZMER_Y || boll[0] == 0){
+		v[0]*=-1;
+		fbeep(660, 40);
+		//Beep(660, 40);
+		printf("\a");
+	}
+	//граница справа
+	if (boll[1] == RAZMER_X){
+		if (y_play_1-boll[0]>1 || y_play_1-boll[0]<-1){
+			score[0]++;
+			boll[0] = RAZMER_Y/2;
+			boll[1] = RAZMER_X/2; 
 		}
-		boll[0]+=v[0];
-		boll[1]+=v[1];
+		v[1]*=-1;
+	} else
+	//граница слева
+	if(boll[1] == 0){
+		if (y_play_2-boll[0]>1 || y_play_2-boll[0]<-1){
+			score[1]++;
+			boll[0] = RAZMER_Y/2;
+			boll[1] = RAZMER_X/2;
+		}
+		v[1]*=-1; 
+	}
+	boll[0]+=v[0];
+	boll[1]+=v[1];
 }
 
 void error(char *str){

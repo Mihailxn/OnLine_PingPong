@@ -96,7 +96,7 @@ void pong(short mod){
 						if (y_play_2 == yMax-3)
 						y_play_2 = yMax-4;
 						break;
-					case 'p':
+					case 'p': //пауза
 						getchar();
 						break;
 					case 0x1B: // ESC (выход)

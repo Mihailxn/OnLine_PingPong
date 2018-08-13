@@ -16,7 +16,6 @@ void pong(short);
 short menu(short);
 
 //secondary_f.c
-//void sig_winch(int);
 void error(char *);
 void print_load_game();
 void print_end_game();
@@ -34,6 +33,13 @@ void receiver(short *, short *, short *, short *);
 
 //bot_offline.c
 short bot(short *, short *, short , short);
+
+//sound.c
+void fbeep(int, int);
+
+enum notes {
+    A = 440
+};
 
 struct ServerToClient{
 	char nick[15];

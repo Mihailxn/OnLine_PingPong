@@ -69,7 +69,6 @@ int teke_connect(char *nikname_1, char *nikname_2){
 	return 0;
 }
 
-
 void sender(char y_play){
 	switch(y_play){
 		case 'u':
