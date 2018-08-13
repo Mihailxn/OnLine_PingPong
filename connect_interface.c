@@ -44,7 +44,6 @@ int teke_connect(char *nikname_1, char *nikname_2){
 	sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
 	pthread_create(&hearth, NULL, hearthis, &esc);
 	
-	
 	while (esc == 0){
 		if (getch()==0x1B){
 			esc = 2;
