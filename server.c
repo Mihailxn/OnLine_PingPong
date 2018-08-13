@@ -15,8 +15,8 @@
 #define X_FIELD 76//Размер поля x координаты
 #define Y_FIELD 20//Размер поля y координаты
 #define MID_RACKET 1//Размер середины ракетки (только нечётное число)
-#define SIDE_RACKET 1//Размер боковой части ракетки
-#define END_RACKET 1//Размер крайней части ракетки
+#define SIDE_RACKET 1.2//Размер боковой части ракетки
+#define END_RACKET 1.2//Размер крайней части ракетки
 #define GAME_SPEED 200000//За сколько наносекунд произойдёт такт
 #define BOLL_SPEED 24//чем число меньше, тем быстрее мяч, скорость ракеток не изменяется
 
@@ -80,10 +80,10 @@ void *listener_fn(void *arguments)
 		//exit(4);
 		count_play_1++;
 		count_play_2++;
-		usleep(1000);
-		if(count_play_1>3)
+		usleep(10);
+		if(count_play_1>100000)
 		    arg->endgame='1';
-		if(count_play_2>3)
+		if(count_play_2>100000)
 		    arg->endgame='2';
 	} 
 	else 
@@ -270,13 +270,14 @@ void *listener_fn(void *arguments)
 						for(i=0;i<BOLL_SPEED;i++)
 						{
 						    if (LA1.move_1 > Y_FIELD)
-							LA1.move_1 = 0;
+								LA1.move_1 = 0;
 						    if (LA1.move_1 < 0)
-							LA1.move_1 = Y_FIELD;
+								LA1.move_1 = Y_FIELD;
 						    if (LA1.move_2 > Y_FIELD)
-							LA1.move_2 = 0;
+								LA1.move_2 = 0;
 						    if (LA1.move_2 < 0)
-							LA1.move_2 = Y_FIELD;
+								LA1.move_2 = Y_FIELD;
+								
 						    y_play_1=LA1.move_1;
 						    y_play_2=LA1.move_2;
 						
