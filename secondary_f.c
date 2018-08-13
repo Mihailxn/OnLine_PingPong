@@ -8,9 +8,7 @@ void offline_play(short *boll, short *v, short *score, short y_play_1, short y_p
 	//граница поля игры сверху или снизу
 	if (boll[0] == RAZMER_Y || boll[0] == 0){
 		v[0]*=-1;
-		fbeep(660, 40);
-		//Beep(660, 40);
-		printf("\a");
+		fbeep(660, 10);
 	}
 	//граница справа
 	if (boll[1] == RAZMER_X){
@@ -18,8 +16,9 @@ void offline_play(short *boll, short *v, short *score, short y_play_1, short y_p
 			score[0]++;
 			boll[0] = RAZMER_Y/2;
 			boll[1] = RAZMER_X/2; 
-		}
+		} else fbeep(550, 20);
 		v[1]*=-1;
+		
 	} else
 	//граница слева
 	if(boll[1] == 0){
@@ -27,7 +26,7 @@ void offline_play(short *boll, short *v, short *score, short y_play_1, short y_p
 			score[1]++;
 			boll[0] = RAZMER_Y/2;
 			boll[1] = RAZMER_X/2;
-		}
+		} else fbeep(550, 20);
 		v[1]*=-1; 
 	}
 	boll[0]+=v[0];

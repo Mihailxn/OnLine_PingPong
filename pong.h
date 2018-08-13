@@ -37,10 +37,6 @@ short bot(short *, short *, short , short);
 //sound.c
 void fbeep(int, int);
 
-enum notes {
-    A = 440
-};
-
 struct ServerToClient{
 	char nick[15];
 	short number;
