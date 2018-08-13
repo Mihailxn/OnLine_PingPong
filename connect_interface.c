@@ -18,7 +18,7 @@ void* hearthis(void* ptr){
 	*esc = 1;
 }
 
-void teke_connect(char *nikname_1, char *nikname_2){
+int teke_connect(char *nikname_1, char *nikname_2){
 	pthread_t hearth;
 	char str[] = "Expection of an opponent";
 	int portnum = 30022, esc = 0, stat;
@@ -52,17 +52,7 @@ void teke_connect(char *nikname_1, char *nikname_2){
 		}
 	}
 	pthread_join(hearth, &status);
-	/*
-	if (getch()==10){
-		CTS.here = 'E';
-		sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
-		erase();
-		refresh();
-		return();
-	}
-	*/
 	
-	//recvfrom(sockfd, &STC, sizeof(STC), 0, (struct sockaddr *)&serv_addr, &slen);
 	if (esc == 1){
 		gCTS.number = STC.number;
 		strncpy(nikname_2, STC.nick, sizeof(STC.nick));
@@ -72,11 +62,12 @@ void teke_connect(char *nikname_1, char *nikname_2){
 		sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
 		erase();
 		refresh();
-		return;
+		return 1;
 	}
 	
 	erase();
-	refresh();	
+	refresh();
+	return 0;
 }
 
 
