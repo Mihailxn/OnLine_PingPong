@@ -294,12 +294,12 @@ void *listener_fn(void *arguments)
 					}
 					
 					//Мяч ударился о потолок
-					if(y_ball==1)
+					if(y_ball==0)
 					{
 						vct.y=-vct.y;
 					}
 					//Мяч ударился о пол
-					if(y_ball==Y_FIELD-1)
+					if(y_ball==Y_FIELD)
 					{
 						vct.y=-vct.y;
 					}
@@ -313,25 +313,25 @@ void *listener_fn(void *arguments)
 					if(x_ball==X_FIELD-1&&(y_ball>(y_play_2+MID_RACKET/2)&&y_ball<=(y_play_2+MID_RACKET/2+SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y--;
+						vct.y++;
 					}
 					//Мяч ударился о нижний бок ракетки игрока справа
 					if(x_ball==X_FIELD-1&&(y_ball<(y_play_2-MID_RACKET/2)&&y_ball>=(y_play_2-MID_RACKET/2-SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y++;
+						vct.y--;
 					}
 					//Мяч ударился о верхний край ракетки игрока справа
 					if(x_ball==X_FIELD-1&&(y_ball>(y_play_2+MID_RACKET/2+SIDE_RACKET)&&y_ball<=(y_play_2+MID_RACKET/2+SIDE_RACKET+END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y-2;
+						vct.y=vct.y+2;
 					}
 					//Мяч ударился о нижний край ракетки игрока справа
 					if(x_ball==X_FIELD-1&&(y_ball<(y_play_2-MID_RACKET/2-END_RACKET)&&y_ball>=(y_play_2-MID_RACKET/2-SIDE_RACKET-END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y+2;
+						vct.y=vct.y-2;
 					}
 					
 					//Мяч ударился о центр ракетки игрока слева
@@ -343,25 +343,25 @@ void *listener_fn(void *arguments)
 					if(x_ball==1&&(y_ball>(y_play_1+MID_RACKET/2)&&y_ball<=(y_play_1+MID_RACKET/2+SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y--;
+						vct.y++;
 					}
 					//Мяч ударился о нижний бок ракетки игрока слева
 					if(x_ball==1&&(y_ball<(y_play_1-MID_RACKET/2)&&y_ball>=(y_play_1-MID_RACKET/2-SIDE_RACKET)))
 					{
 						vct.x=-1;
-						vct.y++;
+						vct.y--;
 					}
 					//Мяч ударился о верхний край ракетки игрока слева
 					if(x_ball==1&&(y_ball>(y_play_1+MID_RACKET/2+SIDE_RACKET)&&y_ball<=(y_play_1+MID_RACKET/2+SIDE_RACKET+END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y-2;
+						vct.y=vct.y+2;
 					}
 					//Мяч ударился о нижний край ракетки игрока слева
 					if(x_ball==1&&(y_ball<(y_play_1-MID_RACKET/2-END_RACKET)&&y_ball>=(y_play_1-MID_RACKET/2-SIDE_RACKET-END_RACKET)))
 					{
 						vct.x=-1;
-						vct.y=vct.y+2;
+						vct.y=vct.y-2;
 					}
 					//Меняем позицию мячика
 					x_ball+=vct.x;
