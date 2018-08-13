@@ -66,8 +66,8 @@ void *listener_fn(void *arguments)
 {
     int count_play_1=0;
     int count_play_2=0;
-    arg->endgame='0';
     struct ListenerArguments *arg=(struct ListenerArguments *)arguments;
+    arg->endgame='0';
     struct ClientToServerGame CTSG;
     bzero((char* )&CTSG, sizeof(CTSG));
     ssize_t status;
@@ -168,7 +168,9 @@ void *listener_fn(void *arguments)
 			case -1:
 				perror("fork"); /* произошла ошибка */
 				exit(1); /*выход из родительского процесса*/
-			case 0:
+			case 0:{
+				short int score_1=0;
+				short int score_2=0;
 				listener_1 = socket(AF_INET, SOCK_DGRAM, 0);
 				if(listener_1 < 0)
 				{
@@ -239,14 +241,7 @@ void *listener_fn(void *arguments)
 						STCG.status='G';
 						STCG.x_ball=x_ball;
 						STCG.y_ball=y_ball;
-						if (y_play_1 > Y_FIELD)
-							y_play_1 = 0;
-						if (y_play_1 < 0)
-							y_play_1 = Y_FIELD;
-						if (y_play_2 > Y_FIELD)
-							y_play_2 = 0;
-						if (y_play_2 < 0)
-							y_play_2 = Y_FIELD;
+						
 							
 						STCG.y_play_1=y_play_1;
 						STCG.y_play_2=y_play_2;
@@ -274,6 +269,14 @@ void *listener_fn(void *arguments)
 						
 						for(i=0;i<BOLL_SPEED;i++)
 						{
+						    if (LA1.move_1 > Y_FIELD)
+							LA1.move_1 = 0;
+						    if (LA1.move_1 < 0)
+							LA1.move_1 = Y_FIELD;
+						    if (LA1.move_2 > Y_FIELD)
+							LA1.move_2 = 0;
+						    if (LA1.move_2 < 0)
+							LA1.move_2 = Y_FIELD;
 						    y_play_1=LA1.move_1;
 						    y_play_2=LA1.move_2;
 						
@@ -301,6 +304,7 @@ void *listener_fn(void *arguments)
 							printf("sendto()");
 							exit(2);
 						    }
+						    if(LA1.endgame=='1'||LA1.endgame=='2')exit(0);
 						    usleep(GAME_SPEED/40);
 						}
 					//Если мяч улетел за правого игрока
@@ -310,6 +314,7 @@ void *listener_fn(void *arguments)
 						y_ball=Y_FIELD/2;
 						vct.x=-1;
 							vct.y=rand()%3-1;
+						score_1++;
 					}
 					//Если мяч улетел за левого игрока
 					if(x_ball<=0)
@@ -319,6 +324,7 @@ void *listener_fn(void *arguments)
 						
 						vct.x=1;
 							vct.y=rand()%3-1;
+						score_2++;
 					}
 					
 					//Мяч ударился о потолок
@@ -370,37 +376,38 @@ void *listener_fn(void *arguments)
 					//Мяч ударился о верхний бок ракетки игрока слева
 					if(x_ball==1&&(y_ball>(y_play_1+MID_RACKET/2)&&y_ball<=(y_play_1+MID_RACKET/2+SIDE_RACKET)))
 					{
-						vct.x=-1;
+						vct.x=1;
 						vct.y++;
 					}
 					//Мяч ударился о нижний бок ракетки игрока слева
 					if(x_ball==1&&(y_ball<(y_play_1-MID_RACKET/2)&&y_ball>=(y_play_1-MID_RACKET/2-SIDE_RACKET)))
 					{
-						vct.x=-1;
+						vct.x=1;
 						vct.y--;
 					}
 					//Мяч ударился о верхний край ракетки игрока слева
 					if(x_ball==1&&(y_ball>(y_play_1+MID_RACKET/2+SIDE_RACKET)&&y_ball<=(y_play_1+MID_RACKET/2+SIDE_RACKET+END_RACKET)))
 					{
-						vct.x=-1;
+						vct.x=1;
 						vct.y=vct.y+2;
 					}
 					//Мяч ударился о нижний край ракетки игрока слева
 					if(x_ball==1&&(y_ball<(y_play_1-MID_RACKET/2-END_RACKET)&&y_ball>=(y_play_1-MID_RACKET/2-SIDE_RACKET-END_RACKET)))
 					{
-						vct.x=-1;
+						vct.x=1;
 						vct.y=vct.y-2;
 					}
 					//Меняем позицию мячика
 					x_ball+=vct.x;
 					y_ball+=vct.y;
-					
+					if(score_1>=15||score_2>=15)exit(0);
 					usleep(GAME_SPEED/40);//Пока подольше для отладки
-
+				    
 				}
 				int status[2];
 				pthread_join(p_listener_1,(void **)&status[1]);
 				exit(0);
+				}
 			default:
 				break;
 		}
