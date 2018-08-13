@@ -1,7 +1,7 @@
 #This is a Make_file_on-line_ping-pong
 
 Ping-Pong: main.o menu.o pong.o secondary_f.o connect_interface.o bot_offline.o bot.c server.c
-	gcc secondary_f.o menu.o pong.o main.o connect_interface.o bot_offline.o -o Ping-Pong -lncurses
+	gcc secondary_f.o menu.o pong.o main.o connect_interface.o bot_offline.o -o Ping-Pong -lncurses -lpthread
 	gcc server.c -o Server -pthread
 	gcc bot.c -o Bot
 	rm -f *.o
