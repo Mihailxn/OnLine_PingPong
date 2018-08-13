@@ -46,7 +46,13 @@ void pong(short mod){
 	if (mod == 2){
 		char nikname_1[MAX_NAME_LEN], nikname_2[MAX_NAME_LEN];
 		enter_nikname(nikname_1);
-		teke_connect(nikname_1, nikname_2);
+		if (teke_connect(nikname_1, nikname_2)){
+			delwin(score_wnd);
+			delwin(play_wnd);
+			delwin(box_wnd);
+			endwin();
+			return;
+		}
 		mvwprintw(score_wnd, 0, 0, nikname_1);
 		mvwprintw(score_wnd, 0, xMax-strlen(nikname_2), nikname_2);
 		wrefresh(score_wnd);
@@ -149,6 +155,30 @@ void pong(short mod){
 			}
 		}
 		if (esc<0) break;
+		//вывод окна результата игры
+		if (mod == 1)
+		{
+			if (score[0]==SCORE_END){
+				result_multi_offline_game("PLAYER 1");
+				break;
+			}else{
+				if(score[1]==SCORE_END){
+					result_multi_offline_game("PLAYER 2");
+					break;
+				}
+			}
+		}else{
+			if (score[0]==SCORE_END){
+				result_game(WIN);
+				break;
+			} else {
+				if (score[1]==SCORE_END){
+					result_game(LOOS);
+					break;
+				}
+			}
+		}
+		//---------------------------
 		werase(play_wnd);
 		mvwprintw(score_wnd, 0, xMax/2-2-getCountsOfDigits(score[0]), "%i | %i", score[0], score[1]);
 		mvwvline(play_wnd,0,RAZMER_X/2,ACS_VLINE,RAZMER_Y+1);
