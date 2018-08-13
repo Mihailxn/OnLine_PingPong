@@ -210,7 +210,7 @@ void result_game(short mod){
 				"\t YYYYY  OO   OO UU   UU    WW   W  WW  III  NN N NN\n" 
 				"\t  YYY   OO   OO UU   UU     WW WWW WW  III  NN  NNN\n" 
 				"\t  YYY    OOOO0   UUUUU       WW   WW  IIIII NN   NN\n");  
-			break:
+			break;
 		case 2:
 			wbkgd(stdscr, COLOR_PAIR(7) | A_BOLD);
 			mvprintw(yMax/3,(xMax-60)/2,
@@ -219,10 +219,10 @@ void result_game(short mod){
 				"\t YYYYY  OO   OO UU   UU    LL      OO   OO  SSSSS   SSSSS \n" 
 				"\t  YYY   OO   OO UU   UU    LL      OO   OO      SS      SS\n" 
 				"\t  YYY    OOOO0   UUUUU     LLLLLLL  OOOO0   SSSSS   SSSSS \n");  
-			break:
+			break;
 		default:
 			error("result mode error");
-			break:
+			break;
     }
 	attron(COLOR_PAIR(4));
 	box(stdscr, 0, 0);
