@@ -52,7 +52,6 @@
 
 struct ListenerArguments
 {
-    //short int *y_play;
     int move_1;
     int move_2;
     int *listener_1;
@@ -76,8 +75,6 @@ void *listener_fn(void *arguments)
 	//Без мьютексов так как изменяет данные только один данный поток, а чтением можно принебречь
 	if(status = recv(*arg->listener_1, &CTSG, sizeof(CTSG), MSG_DONTWAIT) <0)
 	{
-		//printf("recvfrom()");
-		//exit(4);
 		count_play_1++;
 		count_play_2++;
 		usleep(10);
@@ -213,7 +210,6 @@ void *listener_fn(void *arguments)
 				bzero((char* )&CTSG, sizeof(CTSG));
 				struct ServerToClientGame STCG;
 				bzero((char* )&STCG, sizeof(STCG));
-				//ssize_t status;
 				
 				while((vct.x=rand()%3-1)==0);
 					vct.y=rand()%3-1;

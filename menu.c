@@ -48,11 +48,13 @@ short menu(short highlight){
 				highlight--;
 				if (highlight == -1)
 					highlight = 0;
+				fbeep(400, 15);
 				break;
 			case KEY_DOWN:
 				highlight++;
 				if (highlight == n_list)
 					highlight = n_list-1;
+				fbeep(400, 15);
 				break;
 			case 10: // ENTER
 				enter = 1;
