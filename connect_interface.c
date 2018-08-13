@@ -21,7 +21,7 @@ void* hearthis(void* ptr){
 int teke_connect(char *nikname_1, char *nikname_2){
 	pthread_t hearth;
 	char str[] = "Expection of an opponent";
-	int portnum = 30022, esc = 0, stat;
+	int portnum = 30022, esc = 0;
 	void *status;
 	
 	bzero((char *) &CTS, sizeof(CTS));
@@ -44,7 +44,7 @@ int teke_connect(char *nikname_1, char *nikname_2){
 	sendto(sockfd, &CTS, sizeof(CTS), 0, (struct sockaddr *)&serv_addr, slen);
 	pthread_create(&hearth, NULL, hearthis, &esc);
 	
-	while (esc == 0){
+	for(nodelay(stdscr,1); esc==0; usleep(2000)){
 		if (getch()==0x1B){
 			esc = 2;
 			pthread_cancel(hearth);
