@@ -196,6 +196,43 @@ void info(short mod){
     endwin();
 }
 
+void result_game(short mod){
+	int yMax, xMax;
+    getmaxyx(stdscr, yMax, xMax);
+	init_pair(6, COLOR_GREEN, COLOR_BLACK);
+    init_pair(7, COLOR_RED, COLOR_BLACK);
+    switch(mod){
+		case 1:
+			wbkgd(stdscr, COLOR_PAIR(6) | A_BOLD);
+			mvprintw(yMax/3,(xMax-50)/2,
+				"\tYY   YY  OOOOO  UU   UU    WW      WW IIIII NN   NN\n" 
+				"\tYY   YY OO   OO UU   UU    WW      WW  III  NNN  NN\n" 
+				"\t YYYYY  OO   OO UU   UU    WW   W  WW  III  NN N NN\n" 
+				"\t  YYY   OO   OO UU   UU     WW WWW WW  III  NN  NNN\n" 
+				"\t  YYY    OOOO0   UUUUU       WW   WW  IIIII NN   NN\n");  
+			break:
+		case 2:
+			wbkgd(stdscr, COLOR_PAIR(7) | A_BOLD);
+			mvprintw(yMax/3,(xMax-60)/2,
+				"\tYY   YY  OOOOO  UU   UU    LL       OOOOO   SSSSS   SSSSS \n" 
+				"\tYY   YY OO   OO UU   UU    LL      OO   OO SS      SS     \n" 
+				"\t YYYYY  OO   OO UU   UU    LL      OO   OO  SSSSS   SSSSS \n" 
+				"\t  YYY   OO   OO UU   UU    LL      OO   OO      SS      SS\n" 
+				"\t  YYY    OOOO0   UUUUU     LLLLLLL  OOOO0   SSSSS   SSSSS \n");  
+			break:
+		default:
+			error("result mode error");
+			break:
+    }
+	attron(COLOR_PAIR(4));
+	box(stdscr, 0, 0);
+	attroff(COLOR_PAIR(4));
+    printw("\n\n\tPress any key to continium...");
+	getch();
+	erase();
+    refresh();
+}
+
 int getCountsOfDigits(int number) {
 	int count = (number == 0) ? 1 : 0;
 	while (number != 0) {
