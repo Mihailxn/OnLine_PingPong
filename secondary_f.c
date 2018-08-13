@@ -73,8 +73,6 @@ void enter_nikname(char *nikname){
 void loading(char *text_str){
 	int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
-	//init_pair(4, COLOR_CYAN, COLOR_BLACK);
-    //init_pair(5, COLOR_BLUE, COLOR_BLACK);
 	wbkgd(stdscr, COLOR_PAIR(5) | A_BOLD);
 	mvprintw(yMax/3-1,(xMax-strlen(text_str))/2, text_str);
     attron(COLOR_PAIR(4));
