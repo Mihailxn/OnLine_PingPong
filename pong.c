@@ -16,6 +16,8 @@ void pong(short mod){
 	//окна
 	WINDOW *score_wnd, *play_wnd, *box_wnd;
 	int time = 0;
+	short status_bot = 0;//состояние бота
+	short y_after_bot = 10;//предсказание.
 	short score[2] = {0};//счёт
 	short y_play_1 = 10;//высоат первой коретки
 	short y_play_2 = 10;//высота второй коретки
@@ -150,7 +152,7 @@ void pong(short mod){
 					default:
 						break;
 				}
-				y_play_1 += bot(boll, v, RIGHT, y_play_1);
+				y_play_1 += bot(boll, v, RIGHT, y_play_1, &status_bot, &y_after_bot, time);
 				break;
 			}
 		}

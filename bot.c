@@ -15,7 +15,7 @@
 
 #define WAIT 0
 #define SCAN 1
-#define RANDON 2
+#define RANDOM 2
 #define MOVEING 3
 
 struct ServerToClient{
@@ -121,11 +121,11 @@ int main(int argc, char const *argv[]){
                     if((after_y >= RAZMER_Y-1) || (after_y <= 1))//настройка под логику сервера
                         vector_y *= -1;
                 }
-                status = RANDON;
+                status = RANDOM;
             }else status = WAIT;
         }
 
-        if(status == RANDON){
+        if(status == RANDOM){
             if(rand()%100 > WIN_RATE){
                 after_y = rand()%(RAZMER_Y+1);
             }

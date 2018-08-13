@@ -33,7 +33,7 @@ void sender(char);
 void receiver(short *, short *, short *, short *);
 
 //bot_offline.c
-short bot(short *, short *, short , short);
+short bot(short *, short *, short , short, short*, short*, int);
 
 struct ServerToClient{
 	char nick[15];

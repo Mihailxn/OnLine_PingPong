@@ -1,7 +1,11 @@
 #include <stdlib.h>
 #include "pong.h"
 
-#define WIN_RATE 70//шанс что бот НЕ пропустит шарик 
+#define WIN_RATE 70 
+
+#define SCAN 0
+#define RANDOM 1
+#define MOVEING 2
 
 short prediction(short *boll, short *v, short position){
 	short vector_x = v[1];
@@ -29,46 +33,53 @@ short prediction(short *boll, short *v, short position){
 	return -1;
 }
 
-short bot(short *boll, short *v, short position, short player_y){
-	short target_y;
-	short status_bot = 0;
-	if(position == LEFT){
-		if(boll[1] < RAZMER_X/2){
-			if((boll[1] == RAZMER_X/2-1) && (v[1] < 0)){
-				if(rand()%100 > WIN_RATE)
-					target_y = rand()%RAZMER_Y;
-				else target_y = prediction(boll, v, position);
-				status_bot = 1;
+short bot(short *boll, short *v, short position, short player_y, short *status, short *target_y, int time_bot){
+	//static short time_bot;
+	if(*status == SCAN){
+		if(position == LEFT){
+			if((boll[1] < RAZMER_X/2) && (v[1] < 0)){
+				*target_y = prediction(boll, v, position);
+				*status = MOVEING;
 			}
-			if(status_bot){
-				if(player_y > target_y)
-					return -1;
-				if(player_y < target_y)
-					return +1;
-				if(player_y == target_y){
-					status_bot = 0;
-					return 0;
-				}
+		}
+		if(position == RIGHT){
+			if((boll[1] > RAZMER_X/2) && (v[1] > 0)){
+				*target_y = prediction(boll, v, position);
+				*status = MOVEING;
 			}
 		}
 	}
-	if(position == RIGHT){
-		if(boll[1] > RAZMER_X/2){
-			if((boll[1] == RAZMER_X/2+1) && (v[1] > 0)){
-				if(rand()%100 > WIN_RATE)
-					target_y = rand()%RAZMER_Y;
-				else target_y = prediction(boll, v, position);
-				status_bot = 1;
-			}
-			if(status_bot){
-				if(player_y > target_y)
-					return -1;
-				if(player_y < target_y)
-					return +1;
-				if(player_y == target_y){
-					status_bot = 0;
+
+	if(*status == RANDOM){
+		if(rand()%100 > WIN_RATE){
+			*target_y = rand()%(RAZMER_Y+1);
+		}
+		*status = MOVEING;
+	}
+	if(!(time_bot%40)){
+		if(*status == MOVEING){
+			if(position == LEFT){
+				if(player_y == *target_y){
+					if(v[1] < 0)
+						*status = SCAN;
 					return 0;
 				}
+				if(player_y < *target_y)
+					return +1;
+				if(player_y > *target_y)
+					return -1;
+				
+			}
+			if(position == RIGHT){
+				if(player_y == *target_y){
+					if(v[1] < 0)
+						*status = SCAN;
+					return 0;
+				}
+				if(player_y < *target_y)
+					return +1;
+				if(player_y > *target_y)
+					return -1;
 			}
 		}
 	}
