@@ -33,52 +33,54 @@ short prediction(short *boll, short *v, short position){
 	return -1;
 }
 
-short bot(short *boll, short *v, short position, short player_y, short *status, short *target_y, int time_bot){
-	//static short time_bot;
-	if(*status == SCAN){
+short bot(short *boll, short *v, short position, short player_y){
+	static unsigned time_bot = 0;
+	static short status = 0;
+	static short target_y = 0;
+	if(status == SCAN){
 		if(position == LEFT){
 			if((boll[1] < RAZMER_X/2) && (v[1] < 0)){
-				*target_y = prediction(boll, v, position);
-				*status = MOVEING;
+				target_y = prediction(boll, v, position);
+				status = RANDOM;
 			}
 		}
 		if(position == RIGHT){
 			if((boll[1] > RAZMER_X/2) && (v[1] > 0)){
-				*target_y = prediction(boll, v, position);
-				*status = MOVEING;
+				target_y = prediction(boll, v, position);
+				status = RANDOM;
 			}
 		}
 	}
 
-	if(*status == RANDOM){
+	if(status == RANDOM){
 		if(rand()%100 > WIN_RATE){
-			*target_y = rand()%(RAZMER_Y+1);
+			target_y = rand()%(RAZMER_Y+1);
 		}
-		*status = MOVEING;
+		status = MOVEING;
 	}
-	if(!(time_bot%40)){
-		if(*status == MOVEING){
+	if(!(++time_bot%40)){
+		if(status == MOVEING){
 			if(position == LEFT){
-				if(player_y == *target_y){
+				if(player_y == target_y){
 					if(v[1] < 0)
-						*status = SCAN;
+						status = SCAN;
 					return 0;
 				}
-				if(player_y < *target_y)
+				if(player_y < target_y)
 					return +1;
-				if(player_y > *target_y)
+				if(player_y > target_y)
 					return -1;
 				
 			}
 			if(position == RIGHT){
-				if(player_y == *target_y){
+				if(player_y == target_y){
 					if(v[1] < 0)
-						*status = SCAN;
+						status = SCAN;
 					return 0;
 				}
-				if(player_y < *target_y)
+				if(player_y < target_y)
 					return +1;
-				if(player_y > *target_y)
+				if(player_y > target_y)
 					return -1;
 			}
 		}

@@ -152,7 +152,7 @@ void pong(short mod){
 					default:
 						break;
 				}
-				y_play_1 += bot(boll, v, RIGHT, y_play_1, &status_bot, &y_after_bot, time);
+				y_play_1 += bot(boll, v, RIGHT, y_play_1);
 				break;
 			}
 		}
