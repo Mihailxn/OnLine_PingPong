@@ -2,7 +2,7 @@
 #include "pong.h"
 
 #define WIN_RATE 90
-#define SHIFT 4
+#define SHIFT 3
 
 #define SCAN 0
 #define RANDOM 1
@@ -57,11 +57,11 @@ short bot(short *boll, short *v, short position, short player_y){
 		if(rand()%100 > WIN_RATE){
             if(rand()%2){
                 if((target_y+SHIFT) > RAZMER_Y){
-                    target_y-=SHIFT*2;
+                    target_y-=SHIFT;
                 }else target_y+=SHIFT;
             }else{
                 if((target_y-SHIFT) < 0){
-                    target_y+=SHIFT*2;
+                    target_y+=SHIFT;
                 }else target_y-=SHIFT;
             }
         }

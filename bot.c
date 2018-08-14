@@ -12,7 +12,7 @@
 #define RAZMER_X 76//ширина игрового поля
 
 #define WIN_RATE 90
-#define SHIFT 4
+#define SHIFT 3
 
 #define WAIT 0
 #define SCAN 1
@@ -130,11 +130,11 @@ int main(int argc, char const *argv[]){
             if(rand()%100 > WIN_RATE){
                 if(rand()%2){
                     if((after_y+SHIFT) > RAZMER_Y){
-                        after_y-=SHIFT*2;
+                        after_y-=SHIFT;
                     }else after_y+=SHIFT;
                 }else{
                     if((after_y-SHIFT) < 0){
-                        after_y+=SHIFT*2;
+                        after_y+=SHIFT;
                     }else after_y-=SHIFT;
                 }
             }
